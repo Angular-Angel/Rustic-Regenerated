@@ -3,11 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.angle.rusticregenerated;
+package net.angle.rusticregenerated.core;
 
 import java.util.stream.Collectors;
+import net.angle.rusticregenerated.common.blocks.plants.AppleLeavesBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,7 +22,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,8 +37,21 @@ import org.apache.logging.log4j.Logger;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("rusticregenerated")
 public class RusticRegenerated {
+    
+    public static final String MODID = "rusticregenerated";
+    public static final String NAME = "Rustic Regenerated";
+    
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
+    
+    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
+
+    public static final RegistryObject<Block> APPLE_LEAVES_BLOCK = BLOCKS.register("apple_leaves", () -> {
+        BlockBehaviour.Properties appleLeavesProperties = LeavesBlock.Properties.of(Material.LEAVES);
+        appleLeavesProperties.strength(0.2f, 0.2f);
+        appleLeavesProperties.sound(SoundType.GRASS);
+        return new AppleLeavesBlock(appleLeavesProperties);
+        });
 
     public RusticRegenerated() {
         // Register the setup method for modloading
@@ -42,6 +63,8 @@ public class RusticRegenerated {
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        
+        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event)
