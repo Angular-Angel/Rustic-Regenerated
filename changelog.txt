@@ -1,0 +1,4 @@
+Build: 1.17.1-37.0.1 - Thu Jul 22 21:52:37 GMT 2021
+	lexmanos:
+		Bump SecureJarHandler to fix package meta issue. Closes #7881
+		Fix version.json having duplicate libraries.
