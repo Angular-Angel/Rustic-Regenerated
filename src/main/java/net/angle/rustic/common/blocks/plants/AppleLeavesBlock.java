@@ -23,7 +23,7 @@ public class AppleLeavesBlock extends LeavesBlock {
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     
     public AppleLeavesBlock() {
-//        super(AppleLeavesBlock.Properties.copy(Blocks.OAK_LEAVES));
+        super(AppleLeavesBlock.Properties.copy(Blocks.OAK_LEAVES));
 //        this.registerDefaultState(
 //            this.stateDefinition.any()
 //                .setValue(AGE, 0)
