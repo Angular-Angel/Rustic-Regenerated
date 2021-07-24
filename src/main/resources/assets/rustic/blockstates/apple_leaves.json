@@ -1,41 +1,9 @@
 {   
-    "variants": {
-        "apple_age=0": {"model": "minecraft:block/oak_leaves"},
-        "apple_age=1": { "model": "minecraft:block/oak_leaves",
-            "submodel": { "apples": [
-            { "model": "rustic:apple_0" },
-            { "model": "rustic:apple_0", "y": 90 },
-            { "model": "rustic:apple_0", "y": 180 },
-            { "model": "rustic:apple_0", "y": 270 },
-            { "model": "rustic:apple_0_1" },
-            { "model": "rustic:apple_0_1", "y": 90 },
-            { "model": "rustic:apple_0_1", "y": 180 },
-            { "model": "rustic:apple_0_1", "y": 270 }
-            ] 
-        } },
-        "apple_age=2": { "model": "minecraft:block/oak_leaves",
-            "submodel": { "apples": [
-            { "model": "rustic:apple_1" },
-            { "model": "rustic:apple_1", "y": 90 },
-            { "model": "rustic:apple_1", "y": 180 },
-            { "model": "rustic:apple_1", "y": 270 },
-            { "model": "rustic:apple_1_1" },
-            { "model": "rustic:apple_1_1", "y": 90 },
-            { "model": "rustic:apple_1_1", "y": 180 },
-            { "model": "rustic:apple_1_1", "y": 270 }
-            ] 
-        } },
-        "apple_age=3": { "model": "minecraft:block/oak_leaves",
-            "submodel": { "apples": [
-            { "model": "rustic:apple_2" },
-            { "model": "rustic:apple_2", "y": 90 },
-            { "model": "rustic:apple_2", "y": 180 },
-            { "model": "rustic:apple_2", "y": 270 },
-            { "model": "rustic:apple_2_1" },
-            { "model": "rustic:apple_2_1", "y": 90 },
-            { "model": "rustic:apple_2_1", "y": 180 },
-            { "model": "rustic:apple_2_1", "y": 270 }
-            ] 
-        } }
-    }
+    "multipart": [
+        { "apply": { "model": "minecraft:block/oak_leaves" } },
+        {
+            "when": { "apple_age": "1" },
+            "apply": { "model": "rustic:block/apple_0" }
+        }
+    ]
 }
