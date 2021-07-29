@@ -5,11 +5,13 @@
  */
 package net.angle.rustic.core;
 
+import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import net.angle.rustic.common.blocks.AppleLeavesBlock;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -20,6 +22,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.grower.OakTreeGrower;
 import net.minecraft.world.level.block.SaplingBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.TreeFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -53,6 +58,8 @@ public class Rustic {
     
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger(MODID);
+    
+    public static ConfiguredFeature<?, ?> APPLE_TREE;
     
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     
@@ -96,16 +103,17 @@ public class Rustic {
         return item;
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
+    private void setup(final FMLCommonSetupEvent event) {
+//        APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_tree", 
+//            new ConfiguredFeature<TreeConfiguration, TreeFeature>(new TreeFeature(new Codec<>())), 
+//                new TreeConfiguration(p_161217_, p_161218_, p_161219_, p_161220_, p_161221_, p_161222_, p_161223_, p_161224_, true, true) {
+//        }));
     }
 
-    private void enqueueIMC(final InterModEnqueueEvent event)
-    {
+    private void enqueueIMC(final InterModEnqueueEvent event) {
     }
 
-    public void processIMC(final InterModProcessEvent event)
-    {
+    public void processIMC(final InterModProcessEvent event) {
     }
     
     // You can use SubscribeEvent and let the Event Bus discover methods to call
