@@ -3,10 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.angle.rustic.common.blocks.plants;
+package net.angle.rustic.common.blocks;
 
+import java.util.List;
 import java.util.Random;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import net.angle.rustic.core.Rustic;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.BlockGetter;
@@ -21,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.BlockHitResult;
@@ -36,7 +42,7 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     
     public AppleLeavesBlock() {
-        super(AppleLeavesBlock.Properties.copy(Blocks.OAK_LEAVES));
+        super(Properties.copy(Blocks.OAK_LEAVES));
         this.registerDefaultState(
             stateDefinition.any()
                 .setValue(AGE, 0)
@@ -84,6 +90,17 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     }
     
     @Override
+    public boolean isShearable(@Nonnull ItemStack item, Level world, BlockPos pos) {
+        return true;
+    }
+    
+    @Override
+    public List<ItemStack> onSheared(@Nullable Player player, @Nonnull ItemStack item, Level world, BlockPos pos, int fortune) {
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!");
+        return NonNullList.withSize(1, new ItemStack(asItem()));
+    }
+    
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(AGE);
@@ -117,6 +134,12 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
         if (state.getValue(AGE) == getMaxAge()) {
             popResource(level, pos, new ItemStack(Items.APPLE));
         }
+    }
+
+    @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        super.playerWillDestroy(level, pos, state, player); //To change body of generated methods, choose Tools | Templates.
+        dropApple(level, pos, state);
     }
 
     @Override
