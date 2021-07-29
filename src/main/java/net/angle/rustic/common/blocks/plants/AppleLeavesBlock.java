@@ -40,6 +40,8 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
         this.registerDefaultState(
             stateDefinition.any()
                 .setValue(AGE, 0)
+                .setValue(DISTANCE, 1)
+                .setValue(PERSISTENT, false)
         );
     }
 
@@ -48,11 +50,8 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     }
     
     protected static boolean isAirAdjacent(BlockGetter bg, BlockPos pos) {
-        if (bg.getBlockState(pos.above()).isAir() || bg.getBlockState(pos.below()).isAir() || bg.getBlockState(pos.north()).isAir() || bg.getBlockState(pos.south()).isAir()
-                || bg.getBlockState(pos.east()).isAir() || bg.getBlockState(pos.north()).isAir()) {
-            return true;
-        }
-        return false;
+        return bg.getBlockState(pos.above()).isAir() || bg.getBlockState(pos.below()).isAir() || bg.getBlockState(pos.north()).isAir() || bg.getBlockState(pos.south()).isAir()
+                || bg.getBlockState(pos.east()).isAir() || bg.getBlockState(pos.north()).isAir();
     }
     
     public boolean canGrow(BlockGetter getter, BlockPos pos, BlockState state) {
@@ -60,20 +59,24 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     }
     
     protected static float getGrowthChance() {
-        return 1F;
+        return 0.1f;
+    }
+
+    @Override
+    public boolean isRandomlyTicking(BlockState state) {
+        return true;
     }
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
         super.randomTick(state, level, pos, rand);
-        System.out.println("?");
+        
         if (canGrow(level, pos, state)) {
-            float f = getGrowthChance();
-            System.out.println("??????????????");
-
+            //Not actually sure if I should be directly calling forge hooks here, 
+            //but this is copied more or less verbatim from rustic for 1.12, and I don't know how else to do it.
             if (ForgeHooks.onCropsGrowPre(level, pos, state,
-                        rand.nextInt((int) (50.0F / f) + 1) == 0)) {
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        rand.nextFloat() <= getGrowthChance())) {
+                
                 level.setBlock(pos, state.setValue(AGE, (state.getValue(AGE) + 1)), 2);
                 net.minecraftforge.common.ForgeHooks.onCropsGrowPost(level, pos, state);
             }
