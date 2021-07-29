@@ -8,20 +8,29 @@ package net.angle.rustic.common.blocks.plants;
 import java.util.Random;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.BlockHitResult;
 
 /**
  *
  * @author angle
  */
 
-public class AppleLeavesBlock extends LeavesBlock {
+public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
     
@@ -37,13 +46,21 @@ public class AppleLeavesBlock extends LeavesBlock {
         return 3;
     }
     
-//    protected static boolean isAirAdjacent(World world, BlockPos pos, IBlockState state) {
-//        if (world.isAirBlock(pos.below()) || world.isAirBlock(pos.north()) || world.isAirBlock(pos.south())
-//                || world.isAirBlock(pos.west()) || world.isAirBlock(pos.east())) {
-//            return true;
-//        }
-//        return false;
-//    }
+    protected static boolean isAirAdjacent(BlockGetter bg, BlockPos pos) {
+        if (bg.getBlockState(pos.above()).isAir() || bg.getBlockState(pos.below()).isAir() || bg.getBlockState(pos.north()).isAir() || bg.getBlockState(pos.south()).isAir()
+                || bg.getBlockState(pos.east()).isAir() || bg.getBlockState(pos.north()).isAir()) {
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean canGrow(BlockGetter getter, BlockPos pos, BlockState state) {
+            return state.getValue(AGE) < getMaxAge() && isAirAdjacent(getter, pos);
+    }
+    
+    protected static float getGrowthChance() {
+        return 1F;
+    }
 
     @Override
     public void randomTick(BlockState state, ServerLevel server, BlockPos pos, Random rand) {
@@ -51,15 +68,15 @@ public class AppleLeavesBlock extends LeavesBlock {
 
             int i = state.getValue(AGE);
 
-//            if (i < getMaxAge() && isAirAdjacent(worldIn, pos, state)) {
-//                    float f = getGrowthChance(this, worldIn, pos);
+            if (canGrow(server, pos, state)) {
+                    float f = getGrowthChance();
 //
 //                    if (net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state,
 //                                    rand.nextInt((int) (50.0F / f) + 1) == 0)) {
 //                            worldIn.setBlockState(pos, state.withProperty(AGE, (i + 1)), 2);
 //                            net.minecraftforge.common.ForgeHooks.onCropsGrowPost(worldIn, pos, state, worldIn.getBlockState(pos));
 //                    }
-//            }
+            }
     }
     
     @Override
@@ -67,5 +84,49 @@ public class AppleLeavesBlock extends LeavesBlock {
         super.createBlockStateDefinition(builder);
         builder.add(AGE);
     }
+
+    @Override
+    public boolean isValidBonemealTarget(BlockGetter getter, BlockPos pos, BlockState state, boolean isClient) {
+        return canGrow(getter, pos, state);
+    }
+    
+    @Override
+    public boolean isBonemealSuccess(Level level, Random random, BlockPos bp, BlockState bs) {
+        return true;
+    }
+    
+    protected int getBonemealAgeIncrease(Random random) {
+        return 1 + random.nextInt(3);
+    }
+    
+    @Override
+    public void performBonemeal(ServerLevel level, Random random, BlockPos pos, BlockState state) {
+        int i = state.getValue(AGE) + this.getBonemealAgeIncrease(random);
+        int j = this.getMaxAge();
+        if (i > j) {
+                i = j;
+        }
+        level.setBlock(pos, state.setValue(AGE, i), 2);
+    }
+    
+    protected void dropApple(Level level, BlockPos pos, BlockState state) {
+        if (state.getValue(AGE) == getMaxAge()) {
+            popResource(level, pos, new ItemStack(Items.APPLE));
+        }
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+        if (state.getValue(AGE) < this.getMaxAge())
+            return InteractionResult.FAIL;
+        
+        dropApple(level, pos, state);
+        
+        level.setBlock(pos, state.setValue(AGE, 0), 2);
+        return InteractionResult.SUCCESS;
+    }
+    
+    
+    
     
 }
