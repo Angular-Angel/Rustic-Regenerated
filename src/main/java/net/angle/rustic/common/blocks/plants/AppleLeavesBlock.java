@@ -24,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.common.ForgeHooks;
 
 /**
  *
@@ -63,20 +64,20 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel server, BlockPos pos, Random rand) {
-            super.randomTick(state, server, pos, rand);
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
+        super.randomTick(state, level, pos, rand);
+        System.out.println("?");
+        if (canGrow(level, pos, state)) {
+            float f = getGrowthChance();
+            System.out.println("??????????????");
 
-            int i = state.getValue(AGE);
-
-            if (canGrow(server, pos, state)) {
-                    float f = getGrowthChance();
-//
-//                    if (net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state,
-//                                    rand.nextInt((int) (50.0F / f) + 1) == 0)) {
-//                            worldIn.setBlockState(pos, state.withProperty(AGE, (i + 1)), 2);
-//                            net.minecraftforge.common.ForgeHooks.onCropsGrowPost(worldIn, pos, state, worldIn.getBlockState(pos));
-//                    }
+            if (ForgeHooks.onCropsGrowPre(level, pos, state,
+                        rand.nextInt((int) (50.0F / f) + 1) == 0)) {
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                level.setBlock(pos, state.setValue(AGE, (state.getValue(AGE) + 1)), 2);
+                net.minecraftforge.common.ForgeHooks.onCropsGrowPost(level, pos, state);
             }
+        }
     }
     
     @Override
