@@ -5,6 +5,9 @@
  */
 package net.angle.rustic.common.blocks.plants;
 
+import java.util.Random;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -24,17 +27,45 @@ public class AppleLeavesBlock extends LeavesBlock {
     
     public AppleLeavesBlock() {
         super(AppleLeavesBlock.Properties.copy(Blocks.OAK_LEAVES));
-//        this.registerDefaultState(
-//            this.stateDefinition.any()
-//                .setValue(AGE, 0)
-//                .setValue(DISTANCE, 0)
-//                .setValue(PERSISTENT, false)
-//        );
+        this.registerDefaultState(
+            stateDefinition.any()
+                .setValue(AGE, 0)
+        );
+    }
+
+    public int getMaxAge() {
+        return 3;
     }
     
-//    @Override
-//    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-//        builder.add(AGE, DISTANCE, PERSISTENT);
+//    protected static boolean isAirAdjacent(World world, BlockPos pos, IBlockState state) {
+//        if (world.isAirBlock(pos.below()) || world.isAirBlock(pos.north()) || world.isAirBlock(pos.south())
+//                || world.isAirBlock(pos.west()) || world.isAirBlock(pos.east())) {
+//            return true;
+//        }
+//        return false;
 //    }
+
+    @Override
+    public void randomTick(BlockState state, ServerLevel server, BlockPos pos, Random rand) {
+            super.randomTick(state, server, pos, rand);
+
+            int i = state.getValue(AGE);
+
+//            if (i < getMaxAge() && isAirAdjacent(worldIn, pos, state)) {
+//                    float f = getGrowthChance(this, worldIn, pos);
+//
+//                    if (net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state,
+//                                    rand.nextInt((int) (50.0F / f) + 1) == 0)) {
+//                            worldIn.setBlockState(pos, state.withProperty(AGE, (i + 1)), 2);
+//                            net.minecraftforge.common.ForgeHooks.onCropsGrowPost(worldIn, pos, state, worldIn.getBlockState(pos));
+//                    }
+//            }
+    }
+    
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(AGE);
+    }
     
 }

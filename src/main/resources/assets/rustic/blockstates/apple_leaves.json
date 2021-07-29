@@ -2,8 +2,36 @@
     "multipart": [
         { "apply": { "model": "minecraft:block/oak_leaves" } },
         {
-            "when": { "apple_age": "1" },
-            "apply": { "model": "rustic:block/apple_0" }
+            "when": { "age": "1" },
+            "apply": { "model": "rustic:block/apple_0"}
+        },
+        {
+            "when": { "age": "1" },
+            "apply": { "model": "rustic:block/apple_0", "y": 90}
+        },
+        {
+            "when": { "age": "1" },
+            "apply": { "model": "rustic:block/apple_0", "y": 180}
+        },
+        {
+            "when": { "age": "1" },
+            "apply": { "model": "rustic:block/apple_0", "y": 270}
+        },
+        {
+            "when": { "age": "1" },
+            "apply": { "model": "rustic:block/apple_0_1"}
+        },
+        {
+            "when": { "age": "1" },
+            "apply": { "model": "rustic:block/apple_0_1", "y": 90}
+        },
+        {
+            "when": { "age": "1" },
+            "apply": { "model": "rustic:block/apple_0_1", "y": 180}
+        },
+        {
+            "when": { "age": "1" },
+            "apply": { "model": "rustic:block/apple_0_1", "y": 270}
         }
     ]
 }
