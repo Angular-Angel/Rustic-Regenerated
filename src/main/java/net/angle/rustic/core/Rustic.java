@@ -5,17 +5,19 @@
  */
 package net.angle.rustic.core;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.OptionalInt;
 import net.angle.rustic.common.blocks.AppleLeavesBlock;
+import net.angle.rustic.common.blocks.AppleSaplingBlock;
 import net.angle.rustic.common.blocks.AppleSeedsBlock;
-import net.angle.rustic.common.grower.AppleTreeGrower;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.BuiltinRegistries;
-import net.minecraft.data.worldgen.Features;
+import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -24,16 +26,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SaplingBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaJungleFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaPineFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
+import net.minecraft.world.level.levelgen.feature.treedecorators.AlterGroundDecorator;
+import net.minecraft.world.level.levelgen.feature.treedecorators.BeehiveDecorator;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.DarkOakTrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.GiantTrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -70,7 +79,15 @@ public class Rustic {
     private static final Logger LOGGER = LogManager.getLogger(MODID);
     
     public static ConfiguredFeature<TreeConfiguration, ?> APPLE_TREE;
+    public static ConfiguredFeature<TreeConfiguration, ?> APPLE_BEES_0002;
+    public static ConfiguredFeature<TreeConfiguration, ?> APPLE_BEES_002;
+    public static ConfiguredFeature<TreeConfiguration, ?> APPLE_BEES_005;
     public static ConfiguredFeature<TreeConfiguration, ?> FANCY_APPLE_TREE;
+    public static ConfiguredFeature<TreeConfiguration, ?> FANCY_APPLE_BEES_0002;
+    public static ConfiguredFeature<TreeConfiguration, ?> FANCY_APPLE_BEES_002;
+    public static ConfiguredFeature<TreeConfiguration, ?> FANCY_APPLE_BEES_005;
+    public static ConfiguredFeature<TreeConfiguration, ?> MEDIUM_APPLE_TREE;
+    public static ConfiguredFeature<TreeConfiguration, ?> MEGA_APPLE_TREE;
     
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     
@@ -78,7 +95,7 @@ public class Rustic {
 
     public static final RegistryObject<Block> APPLE_LEAVES_BLOCK = BLOCKS.register("apple_leaves", () -> registerLeafBlock(new AppleLeavesBlock()));
     
-    public static final RegistryObject<Block> APPLE_SAPLING_BLOCK = BLOCKS.register("apple_sapling", () -> new SaplingBlock(new AppleTreeGrower(), Properties.copy(Blocks.OAK_SAPLING)));
+    public static final RegistryObject<Block> APPLE_SAPLING_BLOCK = BLOCKS.register("apple_sapling", () -> new AppleSaplingBlock());
 
     public static final RegistryObject<Block> APPLE_SEEDS_BLOCK = BLOCKS.register("apple_seeds", () -> new AppleSeedsBlock());
     
@@ -121,20 +138,63 @@ public class Rustic {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_tree", 
-                Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
-                        new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                        new StraightTrunkPlacer(4, 2, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
-                        new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
-                        new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3), 
-                        new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
-        FANCY_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:fancy_apple_tree", 
-                Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
-                        new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                        new FancyTrunkPlacer(3, 11, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
-                        new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
-                        new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4), 
-                        new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))).ignoreVines().build()));
+        APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_tree",
+            Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
+                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
+                new StraightTrunkPlacer(4, 2, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
+                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
+                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3), 
+                new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
+        
+        APPLE_BEES_0002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_bees_0002", 
+                Feature.TREE.configured(APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(0.0002F)))));
+        
+        APPLE_BEES_002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_bees_002", 
+                Feature.TREE.configured(APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(0.002F)))));
+        
+        APPLE_BEES_005 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_bees_005", 
+                Feature.TREE.configured(APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(0.005F)))));
+        
+        FANCY_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:fancy_apple_tree",
+            Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
+                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
+                new FancyTrunkPlacer(3, 11, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
+                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
+                new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4), 
+                new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))).ignoreVines().build()));
+        
+        FANCY_APPLE_BEES_0002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:fancy_apple_bees_0002", 
+                Feature.TREE.configured(FANCY_APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(.0002F)))));
+        
+        FANCY_APPLE_BEES_002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:fancy_apple_bees_002", 
+                Feature.TREE.configured(FANCY_APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(0.002F)))));
+        
+        FANCY_APPLE_BEES_005 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:fancy_apple_bees_005", 
+                Feature.TREE.configured(FANCY_APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(0.005F)))));
+        
+        MEDIUM_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:medium_apple_tree",
+            Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
+                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
+                new DarkOakTrunkPlacer(6, 1, 1), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
+                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
+                new MegaJungleFoliagePlacer(ConstantInt.of(2), ConstantInt.of(2), 3), 
+                new ThreeLayersFeatureSize(1, 1, 0, 1, 2, OptionalInt.empty()))).ignoreVines().decorators(ImmutableList.of(
+                new AlterGroundDecorator(
+                    new WeightedStateProvider(SimpleWeightedRandomList.<BlockState>builder()
+                    .add(Blocks.PODZOL.defaultBlockState(), 3).add(Blocks.GRASS_BLOCK.defaultBlockState(), 6)
+                    .add(Blocks.COARSE_DIRT.defaultBlockState(), 1).build())))).build()));
+        
+        MEGA_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:mega_apple_tree",
+            Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
+                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
+                new GiantTrunkPlacer(22, 2, 2), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()),
+                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
+                new MegaPineFoliagePlacer(ConstantInt.of(0), ConstantInt.of(0), UniformInt.of(13, 17)), 
+                new TwoLayersFeatureSize(1, 1, 2))).ignoreVines().decorators(ImmutableList.of(
+                new AlterGroundDecorator(
+                    new WeightedStateProvider(SimpleWeightedRandomList.<BlockState>builder()
+                    .add(Blocks.PODZOL.defaultBlockState(), 3).add(Blocks.GRASS_BLOCK.defaultBlockState(), 6)
+                    .add(Blocks.COARSE_DIRT.defaultBlockState(), 1).build())))).build()));
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {

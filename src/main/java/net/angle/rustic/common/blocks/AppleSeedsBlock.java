@@ -25,7 +25,7 @@ import net.minecraftforge.common.ForgeHooks;
  *
  * @author angle
  */
-public class AppleSeedsBlock extends BushBlock implements BonemealableBlock {
+public class AppleSeedsBlock extends BushBlock implements BonemealableBlock, AppleGrowthExporter {
     
     public static final IntegerProperty AGE = BlockStateProperties.AGE_1;
 
@@ -59,7 +59,7 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock {
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
         super.randomTick(state, level, pos, rand);
         
-        if (level.getRawBrightness(pos.above(), level.getSkyDarken()) >= 9) {
+        if (level.getMaxLocalRawBrightness(pos.above()) >= 9) {
             int i = state.getValue(AGE);
             //Not actually sure if I should be directly calling forge hooks here, 
             //but this is copied more or less verbatim from rustic for 1.12, and I don't know how else to do it.
@@ -68,7 +68,8 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock {
                 if (i < this.getMaxAge()) {
                     level.setBlock(pos, state.setValue(AGE, 1), 2);
                 } else {
-                    level.setBlock(pos, Rustic.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
+                    if (!exportGrowth(state, level, pos, 1))
+                        level.setBlock(pos, Rustic.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
                 }
                 net.minecraftforge.common.ForgeHooks.onCropsGrowPost(level, pos, state);
             }
