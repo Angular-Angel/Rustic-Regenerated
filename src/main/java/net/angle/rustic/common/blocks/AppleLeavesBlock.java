@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.angle.rustic.core.Rustic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +25,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.BlockHitResult;
@@ -113,7 +111,7 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     
     @Override
     public boolean isBonemealSuccess(Level level, Random random, BlockPos bp, BlockState bs) {
-        return true;
+        return random.nextFloat() <= 0.8f;
     }
     
     protected int getBonemealAgeIncrease(Random random) {

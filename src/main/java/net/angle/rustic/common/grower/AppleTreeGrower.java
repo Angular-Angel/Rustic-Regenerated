@@ -20,6 +20,8 @@ public class AppleTreeGrower extends AbstractTreeGrower {
     @Override
     protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredFeature(Random random, boolean bln) {
         switch(random.nextInt(10)) {
+            case 0:
+                return Rustic.FANCY_APPLE_TREE;
             default:
                 return Rustic.APPLE_TREE;
         }

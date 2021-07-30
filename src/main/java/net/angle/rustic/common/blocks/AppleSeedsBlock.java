@@ -52,7 +52,7 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock {
     }
     
     protected static float getGrowthChance() {
-        return 0.1f;
+        return 0.15f;
     }
 
     @Override
@@ -81,8 +81,8 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock {
     }
 
     @Override
-    public boolean isBonemealSuccess(Level p_50901_, Random p_50902_, BlockPos p_50903_, BlockState p_50904_) {
-        return true;
+    public boolean isBonemealSuccess(Level p_50901_, Random rand, BlockPos p_50903_, BlockState p_50904_) {
+        return rand.nextFloat() <= 0.8f;
     }
 
     @Override

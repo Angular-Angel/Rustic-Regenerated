@@ -6,6 +6,7 @@
 package net.angle.rustic.core;
 
 import java.util.ArrayList;
+import java.util.OptionalInt;
 import net.angle.rustic.common.blocks.AppleLeavesBlock;
 import net.angle.rustic.common.blocks.AppleSeedsBlock;
 import net.angle.rustic.common.grower.AppleTreeGrower;
@@ -13,13 +14,13 @@ import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.Features;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -30,7 +31,9 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -67,6 +70,7 @@ public class Rustic {
     private static final Logger LOGGER = LogManager.getLogger(MODID);
     
     public static ConfiguredFeature<TreeConfiguration, ?> APPLE_TREE;
+    public static ConfiguredFeature<TreeConfiguration, ?> FANCY_APPLE_TREE;
     
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     
@@ -117,7 +121,20 @@ public class Rustic {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_tree", Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), new StraightTrunkPlacer(4, 2, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3), new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
+        APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_tree", 
+                Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
+                        new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
+                        new StraightTrunkPlacer(4, 2, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
+                        new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
+                        new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3), 
+                        new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
+        FANCY_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:fancy_apple_tree", 
+                Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
+                        new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
+                        new FancyTrunkPlacer(3, 11, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
+                        new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
+                        new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4), 
+                        new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))).ignoreVines().build()));
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
