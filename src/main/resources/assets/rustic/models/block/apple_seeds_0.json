@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:block/cross",
+    "textures": {
+        "cross": "rustic:block/apple_seeds_0"
+    }
+}

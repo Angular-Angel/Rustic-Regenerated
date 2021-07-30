@@ -4,5 +4,7 @@
     "language.code": "en_us",
     
     "block.rustic.apple_leaves": "Apple Leaves",
-    "block.rustic.apple_sapling": "Apple Sapling"
+    "block.rustic.apple_sapling": "Apple Sapling",
+    "block.rustic.apple_seeds": "Apple Seeds",
+    "item.rustic.apple_seeds": "Apple Seeds"
 }

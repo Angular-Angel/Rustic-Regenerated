@@ -55,6 +55,12 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
         return 3;
     }
     
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(AGE);
+    }
+    
     protected static boolean isAirAdjacent(BlockGetter bg, BlockPos pos) {
         return bg.getBlockState(pos.above()).isAir() || bg.getBlockState(pos.below()).isAir() || bg.getBlockState(pos.north()).isAir() || bg.getBlockState(pos.south()).isAir()
                 || bg.getBlockState(pos.east()).isAir() || bg.getBlockState(pos.north()).isAir();
@@ -98,12 +104,6 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     public List<ItemStack> onSheared(@Nullable Player player, @Nonnull ItemStack item, Level world, BlockPos pos, int fortune) {
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!");
         return NonNullList.withSize(1, new ItemStack(asItem()));
-    }
-    
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(AGE);
     }
 
     @Override

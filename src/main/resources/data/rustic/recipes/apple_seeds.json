@@ -1,0 +1,13 @@
+
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:apple"
+    }
+  ],
+  "result": {
+    "item": "rustic:apple_seeds",
+    "count": 1
+  }
+}
