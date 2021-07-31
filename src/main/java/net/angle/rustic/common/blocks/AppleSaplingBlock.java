@@ -7,7 +7,6 @@ package net.angle.rustic.common.blocks;
 
 import java.util.Random;
 import net.angle.rustic.common.grower.AppleTreeGrower;
-import net.angle.rustic.core.Rustic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;

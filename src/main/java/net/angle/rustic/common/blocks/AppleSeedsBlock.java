@@ -63,8 +63,7 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock, App
             int i = state.getValue(AGE);
             //Not actually sure if I should be directly calling forge hooks here, 
             //but this is copied more or less verbatim from rustic for 1.12, and I don't know how else to do it.
-            if (ForgeHooks.onCropsGrowPre(level, pos, state,
-                        rand.nextFloat() <= getGrowthChance())) {
+            if (ForgeHooks.onCropsGrowPre(level, pos, state, rand.nextFloat() <= getGrowthChance())) {
                 if (i < this.getMaxAge()) {
                     level.setBlock(pos, state.setValue(AGE, 1), 2);
                 } else {
