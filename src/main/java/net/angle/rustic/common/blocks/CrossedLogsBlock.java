@@ -23,8 +23,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  *
@@ -64,8 +62,11 @@ public class CrossedLogsBlock extends SlabBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        if (state != null && state.getValue(TYPE) != SlabType.DOUBLE)
-            state.setValue(FACING, context.getHorizontalDirection());
+        if (state == null) return state;
+        if (state.getValue(TYPE) != SlabType.DOUBLE)
+            state = state.setValue(FACING, context.getHorizontalDirection());
+        if (context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER)
+            state = state.setValue(WATERLOGGED, true);
         return state;
     }
 
