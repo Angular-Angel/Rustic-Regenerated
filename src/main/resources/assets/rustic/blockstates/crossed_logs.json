@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "rustic:block/crossed_logs",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "rustic:block/crossed_logs",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "rustic:block/crossed_logs"
+    },
+    "facing=west": {
+      "model": "rustic:block/crossed_logs",
+      "y": 90
+    }
+  }
+}

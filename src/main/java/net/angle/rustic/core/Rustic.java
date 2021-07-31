@@ -11,6 +11,7 @@ import java.util.OptionalInt;
 import net.angle.rustic.common.blocks.AppleLeavesBlock;
 import net.angle.rustic.common.blocks.AppleSaplingBlock;
 import net.angle.rustic.common.blocks.AppleSeedsBlock;
+import net.angle.rustic.common.blocks.CrossedLogsBlock;
 import net.angle.rustic.common.grower.GreatOakTreeGrower;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -119,6 +120,9 @@ public class Rustic {
 
     public static final RegistryObject<Block> APPLE_SEEDS_BLOCK = BLOCKS.register("apple_seeds", () -> new AppleSeedsBlock());
     
+    
+    public static final RegistryObject<Block> CROSSED_LOGS_BLOCK = BLOCKS.register("crossed_logs", () -> new CrossedLogsBlock());
+    
     public static final RegistryObject<Item> APPLE_LEAVES_ITEM = ITEMS.register("apple_leaves", () -> {
         return registerLeafItem(new BlockItem(APPLE_LEAVES_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
     });
@@ -129,6 +133,10 @@ public class Rustic {
     
     public static final RegistryObject<Item> APPLE_SEEDS_ITEM = ITEMS.register("apple_seeds", () -> {
         return new ItemNameBlockItem(APPLE_SEEDS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+    });
+    
+    public static final RegistryObject<Item> CROOSSED_LOG_ITEM = ITEMS.register("crossed_logs", () -> {
+        return new BlockItem(CROSSED_LOGS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
     });
     
     public Rustic() {

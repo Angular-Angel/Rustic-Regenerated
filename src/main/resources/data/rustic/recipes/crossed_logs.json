@@ -1,0 +1,19 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "12",
+    "21"
+  ],
+  "key": {
+    "1": {
+      "tag": "forge:rods/wooden"
+    },
+    "2": {
+      "tag": "minecraft:logs"
+    }
+  },
+  "result": {
+    "item": "rustic:crossed_logs",
+    "count": 16
+  }
+}
