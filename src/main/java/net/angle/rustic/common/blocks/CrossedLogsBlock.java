@@ -9,12 +9,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.SlabBlock;
+import static net.minecraft.world.level.block.SlabBlock.TYPE;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -23,24 +30,43 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  *
  * @author angle
  */
-public class CrossedLogsBlock extends Block {
-    
-    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D);
+public class CrossedLogsBlock extends SlabBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public CrossedLogsBlock() {
         super(Properties.of(Material.WOOD).noOcclusion());
-        this.registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
     }
-
+    
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        return SHAPE;
+    public boolean useShapeForLightOcclusion(BlockState p_56395_) {
+        return true;
     }
+    
+    @Override
+    public boolean canPlaceLiquid(BlockGetter getter, BlockPos pos, BlockState state, Fluid fluid) {
+        return !state.getValue(WATERLOGGED) && fluid == Fluids.WATER;
+    }
+    
+    @Override
+    public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState state, FluidState fluid) {
+        if (!state.getValue(WATERLOGGED) && fluid.getType() == Fluids.WATER) {
+            if (!level.isClientSide()) {
+                level.setBlock(pos, state.setValue(WATERLOGGED, true), 3);
+                level.getLiquidTicks().scheduleTick(pos, fluid.getType(), fluid.getType().getTickDelay(level));
+            }
+            return true;
+        } else {
+            return false;
+        }
+   }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection());
+        BlockState state = super.getStateForPlacement(context);
+        if (state != null && state.getValue(TYPE) != SlabType.DOUBLE)
+            state.setValue(FACING, context.getHorizontalDirection());
+        return state;
     }
 
     @Override
@@ -50,6 +76,7 @@ public class CrossedLogsBlock extends Block {
     
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         builder.add(FACING);
     }
 }
