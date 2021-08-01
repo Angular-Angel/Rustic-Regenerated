@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.angle.rustic.core.Configs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
@@ -69,7 +70,7 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     }
     
     protected static float getGrowthChance() {
-        return 0.1f;
+        return Configs.SERVER.appleMaturationChance.get().floatValue();
     }
 
     @Override

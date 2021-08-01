@@ -7,7 +7,7 @@ package net.angle.rustic.common.grower;
 
 import java.util.Random;
 import net.angle.rustic.core.Rustic;
-import net.minecraft.world.level.block.grower.AbstractMegaTreeGrower;
+import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 
@@ -15,7 +15,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
  *
  * @author angle
  */
-public class AppleTreeGrower extends AbstractMegaTreeGrower {
+public class NormalAppleTreeGrower extends AbstractTreeGrower {
 
     @Override
     protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredFeature(Random random, boolean bees) {
@@ -26,16 +26,5 @@ public class AppleTreeGrower extends AbstractMegaTreeGrower {
                 return bees ? Rustic.APPLE_BEES_005 : Rustic.APPLE_TREE;
         }
     }
-
-    @Override
-    protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredMegaFeature(Random random) {
-        switch(random.nextInt(3)) {
-            case 0:
-                return Rustic.MEGA_APPLE_TREE;
-            default:
-                return Rustic.MEDIUM_APPLE_TREE;
-        }
-    }
-    
     
 }

@@ -6,7 +6,7 @@
 package net.angle.rustic.common.blocks;
 
 import java.util.Random;
-import net.angle.rustic.common.grower.AppleTreeGrower;
+import net.angle.rustic.common.grower.MegaAppleTreeGrower;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class AppleSaplingBlock extends SaplingBlock implements AppleGrowthExporter {
     
     public AppleSaplingBlock() {
-        super(new AppleTreeGrower(), Properties.copy(Blocks.OAK_SAPLING));
+        super(new MegaAppleTreeGrower(), Properties.copy(Blocks.OAK_SAPLING));
     }
     
     @Override

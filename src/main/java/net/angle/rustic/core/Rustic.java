@@ -14,6 +14,7 @@ import net.angle.rustic.common.blocks.AppleSeedsBlock;
 import net.angle.rustic.common.blocks.CrossedLogsBlock;
 import net.angle.rustic.common.grower.GrandBirchTreeGrower;
 import net.angle.rustic.common.grower.GreatOakTreeGrower;
+import net.angle.rustic.common.grower.NormalAppleTreeGrower;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -75,6 +76,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -146,6 +149,10 @@ public class Rustic {
     });
     
     public Rustic() {
+        ModLoadingContext modLoadingContext = ModLoadingContext.get();
+        modLoadingContext.registerConfig(ModConfig.Type.SERVER, Configs.SERVER_SPECIFICATION);
+        modLoadingContext.registerConfig(ModConfig.Type.COMMON, Configs.COMMON_SPECIFICATION);
+        
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the enqueueIMC method for modloading
@@ -169,8 +176,11 @@ public class Rustic {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        ((SaplingBlock) Blocks.OAK_SAPLING).treeGrower = new GreatOakTreeGrower();
-        ((SaplingBlock) Blocks.BIRCH_SAPLING).treeGrower = new GrandBirchTreeGrower();
+        if (Configs.COMMON.addGiantTrees.get()) {
+            ((SaplingBlock) Blocks.OAK_SAPLING).treeGrower = new GreatOakTreeGrower();
+            ((SaplingBlock) Blocks.BIRCH_SAPLING).treeGrower = new GrandBirchTreeGrower();
+        } else
+            ((SaplingBlock) APPLE_SAPLING_BLOCK.get()).treeGrower = new NormalAppleTreeGrower();
         
         APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
@@ -244,7 +254,7 @@ public class Rustic {
                 new TwoLayersFeatureSize(1, 1, 2))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));
         
         APPLE_TREES_02 = Feature.RANDOM_SELECTOR.configured(new RandomFeatureConfiguration(
-            ImmutableList.of(FANCY_APPLE_BEES_0002.weighted(0.02F), MEGA_APPLE_TREE.weighted(0.02F)), 
+            ImmutableList.of(FANCY_APPLE_BEES_0002.weighted(0.02F)), 
                 APPLE_BEES_0002)).decorated(FeatureDecorator.HEIGHTMAP.configured(
                     new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
                         FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
@@ -333,6 +343,9 @@ public class Rustic {
     public static class ForgeEvents {
         @SubscribeEvent
         public static void loadBiome(BiomeLoadingEvent event) {
+            if (!Configs.COMMON.modifyBiomes.get())
+                return;
+            
             ResourceKey<Biome> biome = ResourceKey.create(Registry.BIOME_REGISTRY, event.getName());
             
             if (!BiomeDictionary.getTypes(biome).contains(Type.OVERWORLD))
@@ -352,22 +365,30 @@ public class Rustic {
                 if (name.contains("birch")) {
                     //System.out.println("Birch: " + name);
                     event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_001);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GRAND_BIRCH_01);
-                    if (name.contains("tall"))
+                    if (Configs.COMMON.addGiantTrees.get()) {
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GRAND_BIRCH_01);
+                        if (name.contains("tall"))
+                            event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GRAND_BIRCH_01);
+                    }
                 } else if (name.contains("dark")) {
                     //System.out.println("Dark: " + name);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEDIUM_APPLE_TREES_02);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
+                    if (Configs.COMMON.addGiantTrees.get()) {
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEDIUM_APPLE_TREES_02);
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
+                    } else
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_02);
                 } else if (BiomeDictionary.getTypes(biome).contains(Type.COLD) || BiomeDictionary.getTypes(biome).contains(Type.CONIFEROUS) ||
                         name.contains("spruce") || name.contains("taiga")) {
                     //System.out.println("Spruce/Taiga: " + name);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEGA_PINE_005);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEGA_SPRUCE_005);
+                    if (Configs.COMMON.addGiantTrees.get()) {
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEGA_PINE_005);
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEGA_SPRUCE_005);
+                    }
                 } else {
                     //System.out.println("Forest: " + name);
                     event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_02);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
+                    if (Configs.COMMON.addGiantTrees.get())
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
                 }
             }
         }
