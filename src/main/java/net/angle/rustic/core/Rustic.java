@@ -12,12 +12,14 @@ import net.angle.rustic.common.blocks.AppleLeavesBlock;
 import net.angle.rustic.common.blocks.AppleSaplingBlock;
 import net.angle.rustic.common.blocks.AppleSeedsBlock;
 import net.angle.rustic.common.blocks.CrossedLogsBlock;
+import net.angle.rustic.common.grower.GrandBirchTreeGrower;
 import net.angle.rustic.common.grower.GreatOakTreeGrower;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.Features;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -104,11 +106,15 @@ public class Rustic {
     public static ConfiguredFeature<TreeConfiguration, ?> MEDIUM_APPLE_TREE;
     public static ConfiguredFeature<TreeConfiguration, ?> MEGA_APPLE_TREE;
     public static ConfiguredFeature<TreeConfiguration, ?> GREAT_OAK;
+    public static ConfiguredFeature<TreeConfiguration, ?> GRAND_BIRCH;
     
     public static ConfiguredFeature<?, ?> APPLE_TREES_02;
     public static ConfiguredFeature<?, ?> APPLE_TREES_001;
     public static ConfiguredFeature<?, ?> MEDIUM_APPLE_TREES_02;
-    public static ConfiguredFeature<?, ?> GREAT_OAK_001;
+    public static ConfiguredFeature<?, ?> GREAT_OAK_01;
+    public static ConfiguredFeature<?, ?> GRAND_BIRCH_01;
+    public static ConfiguredFeature<?, ?> MEGA_PINE_005;
+    public static ConfiguredFeature<?, ?> MEGA_SPRUCE_005;
     
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     
@@ -164,6 +170,7 @@ public class Rustic {
 
     private void setup(final FMLCommonSetupEvent event) {
         ((SaplingBlock) Blocks.OAK_SAPLING).treeGrower = new GreatOakTreeGrower();
+        ((SaplingBlock) Blocks.BIRCH_SAPLING).treeGrower = new GrandBirchTreeGrower();
         
         APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
@@ -222,10 +229,18 @@ public class Rustic {
         
         GREAT_OAK = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:great_oak",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
-                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                new MegaJungleTrunkPlacer(10, 2, 19), new SimpleStateProvider(Blocks.OAK_LEAVES.defaultBlockState()),
-                new SimpleStateProvider(Blocks.OAK_SAPLING.defaultBlockState()), 
-                new BlobFoliagePlacer(ConstantInt.of(4), ConstantInt.of(0), 5), 
+                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()),
+                new MegaJungleTrunkPlacer(19, 4, 15), new SimpleStateProvider(Blocks.OAK_LEAVES.defaultBlockState()),
+                new SimpleStateProvider(Blocks.OAK_SAPLING.defaultBlockState()),
+                new BlobFoliagePlacer(ConstantInt.of(4), ConstantInt.of(0), 5),
+                new TwoLayersFeatureSize(1, 1, 2))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));
+        
+        GRAND_BIRCH = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:grand_birch",
+            Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
+                new SimpleStateProvider(Blocks.BIRCH_LOG.defaultBlockState()),
+                new GiantTrunkPlacer(22, 4, 5), new SimpleStateProvider(Blocks.BIRCH_LEAVES.defaultBlockState()),
+                new SimpleStateProvider(Blocks.BIRCH_SAPLING.defaultBlockState()),
+                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 7),
                 new TwoLayersFeatureSize(1, 1, 2))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));
         
         APPLE_TREES_02 = Feature.RANDOM_SELECTOR.configured(new RandomFeatureConfiguration(
@@ -252,11 +267,29 @@ public class Rustic {
                         .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
                             new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.001F, 1)));
         
-        GREAT_OAK_001 = GREAT_OAK.decorated(FeatureDecorator.HEIGHTMAP.configured(
+        GREAT_OAK_01 = GREAT_OAK.decorated(FeatureDecorator.HEIGHTMAP.configured(
                     new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
                         FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
                         .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
-                            new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.001F, 1)));
+                            new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.01F, 1)));
+        
+        GRAND_BIRCH_01 = GRAND_BIRCH.decorated(FeatureDecorator.HEIGHTMAP.configured(
+                    new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
+                        FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
+                        .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
+                            new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.01F, 1)));
+        
+        MEGA_PINE_005 = Features.MEGA_PINE.decorated(FeatureDecorator.HEIGHTMAP.configured(
+                    new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
+                        FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
+                        .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
+                            new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.005F, 1)));
+        
+        MEGA_SPRUCE_005 = Features.MEGA_PINE.decorated(FeatureDecorator.HEIGHTMAP.configured(
+                    new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
+                        FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
+                        .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
+                            new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.005F, 1)));
     }
 
     private void enqueueIMC(final InterModEnqueueEvent event) {
@@ -306,10 +339,8 @@ public class Rustic {
                 return;
             
             if (BiomeDictionary.getTypes(biome).contains(Type.SAVANNA) || 
-                BiomeDictionary.getTypes(biome).contains(Type.CONIFEROUS) ||
                 BiomeDictionary.getTypes(biome).contains(Type.JUNGLE) ||
-                BiomeDictionary.getTypes(biome).contains(Type.HOT) ||
-                BiomeDictionary.getTypes(biome).contains(Type.COLD))
+                BiomeDictionary.getTypes(biome).contains(Type.HOT))
                 return;
             
             if (BiomeDictionary.getTypes(biome).contains(Type.PLAINS) || BiomeDictionary.getTypes(biome).contains(Type.RIVER)) {
@@ -318,14 +349,25 @@ public class Rustic {
             
             if (BiomeDictionary.getTypes(biome).contains(Type.FOREST)) {
                 String name = biome.toString();
-                if (name.contains("birch"))
+                if (name.contains("birch")) {
+                    //System.out.println("Birch: " + name);
                     event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_001);
-                else if (name.contains("dark")) {
+                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GRAND_BIRCH_01);
+                    if (name.contains("tall"))
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GRAND_BIRCH_01);
+                } else if (name.contains("dark")) {
+                    //System.out.println("Dark: " + name);
                     event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEDIUM_APPLE_TREES_02);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_001);
+                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
+                } else if (BiomeDictionary.getTypes(biome).contains(Type.COLD) || BiomeDictionary.getTypes(biome).contains(Type.CONIFEROUS) ||
+                        name.contains("spruce") || name.contains("taiga")) {
+                    //System.out.println("Spruce/Taiga: " + name);
+                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEGA_PINE_005);
+                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEGA_SPRUCE_005);
                 } else {
+                    //System.out.println("Forest: " + name);
                     event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_02);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_001);
+                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
                 }
             }
         }
