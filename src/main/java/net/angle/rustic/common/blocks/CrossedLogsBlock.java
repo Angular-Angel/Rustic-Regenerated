@@ -23,6 +23,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.common.ToolType;
 
 /**
  *
@@ -32,7 +33,7 @@ public class CrossedLogsBlock extends SlabBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public CrossedLogsBlock() {
-        super(Properties.of(Material.WOOD).noOcclusion());
+        super(Properties.of(Material.WOOD).noOcclusion().strength(2).harvestTool(ToolType.AXE));
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
     }
     
