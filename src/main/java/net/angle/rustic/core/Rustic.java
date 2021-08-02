@@ -49,6 +49,7 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlac
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaJungleFoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaPineFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.feature.treedecorators.AlterGroundDecorator;
@@ -182,10 +183,14 @@ public class Rustic {
         } else
             ((SaplingBlock) APPLE_SAPLING_BLOCK.get()).treeGrower = new NormalAppleTreeGrower();
         
+        BlockStateProvider appleLeavesProvider = new WeightedStateProvider(SimpleWeightedRandomList.<BlockState>builder()
+                .add(APPLE_LEAVES_BLOCK.get().defaultBlockState(), (int) (100 * Configs.COMMON.appleTreeFruitiness.get()))
+                .add(Blocks.OAK_LEAVES.defaultBlockState(), (int) (100 * (1 - Configs.COMMON.appleTreeFruitiness.get()))).build());
+        
         APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                new StraightTrunkPlacer(4, 2, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
+                new StraightTrunkPlacer(4, 2, 0), appleLeavesProvider, 
                 new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
                 new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3), 
                 new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
@@ -202,7 +207,7 @@ public class Rustic {
         FANCY_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:fancy_apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                new FancyTrunkPlacer(3, 11, 0), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
+                new FancyTrunkPlacer(3, 11, 0), appleLeavesProvider, 
                 new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4), 
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))).ignoreVines().build()));
@@ -224,7 +229,7 @@ public class Rustic {
         MEDIUM_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:medium_apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                new DarkOakTrunkPlacer(6, 1, 1), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()), 
+                new DarkOakTrunkPlacer(6, 1, 1), appleLeavesProvider, 
                 new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
                 new MegaJungleFoliagePlacer(ConstantInt.of(2), ConstantInt.of(2), 3), 
                 new ThreeLayersFeatureSize(1, 1, 0, 1, 2, OptionalInt.empty()))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));
@@ -232,7 +237,7 @@ public class Rustic {
         MEGA_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:mega_apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                new GiantTrunkPlacer(22, 2, 2), new SimpleStateProvider(APPLE_LEAVES_BLOCK.get().defaultBlockState()),
+                new GiantTrunkPlacer(22, 2, 2), appleLeavesProvider,
                 new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
                 new MegaPineFoliagePlacer(ConstantInt.of(0), ConstantInt.of(0), UniformInt.of(13, 17)), 
                 new TwoLayersFeatureSize(1, 1, 2))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));

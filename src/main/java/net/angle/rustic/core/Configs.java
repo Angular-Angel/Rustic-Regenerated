@@ -30,6 +30,7 @@ public class Configs {
     public static class CommonConfig {
         public final ForgeConfigSpec.BooleanValue modifyBiomes;
         public final ForgeConfigSpec.BooleanValue addGiantTrees;
+        public final ForgeConfigSpec.DoubleValue appleTreeFruitiness;
 
         CommonConfig(ForgeConfigSpec.Builder builder) {
             modifyBiomes = builder.comment("If Rustic should modify existing biomes.")
@@ -37,6 +38,9 @@ public class Configs {
             
             addGiantTrees = builder.comment("If Rustic should add giant versions of its trees, and of vanilla oaks and birches.")
                 .define("addGiantTrees", true);
+
+            appleTreeFruitiness = builder.comment("This determines what percentage of an apple trees leaves are apple leaves, instead of oak leaves.")
+                .defineInRange("appleTreeFruitiness", 0.55d, 0, 1);
         }
     }
 
@@ -46,7 +50,7 @@ public class Configs {
         ServerConfig(ForgeConfigSpec.Builder builder) {
 
             appleMaturationChance = builder.comment("The chance of an apple leaf block maturing one stage each time it gets updated.")
-                .defineInRange("appleMaturationChance", 0.10d, 0, Float.MAX_VALUE);
+                .defineInRange("appleMaturationChance", 0.10d, 0, 1);
         }
     }
 }
