@@ -46,11 +46,15 @@ public class Configs {
 
     public static class ServerConfig {
         public final ForgeConfigSpec.DoubleValue appleMaturationChance;
+        public final ForgeConfigSpec.DoubleValue goldenAppleHarvestChance;
 
         ServerConfig(ForgeConfigSpec.Builder builder) {
 
             appleMaturationChance = builder.comment("The chance of an apple leaf block maturing one stage each time it gets updated.")
                 .defineInRange("appleMaturationChance", 0.10d, 0, 1);
+
+            goldenAppleHarvestChance = builder.comment("The chance of getting a golden apple from a mature apple leaf block when right clicking it.")
+                .defineInRange("goldenAppleHarvestChance", 0.001, 0, 1);
         }
     }
 }

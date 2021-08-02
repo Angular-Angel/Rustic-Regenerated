@@ -131,7 +131,7 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     
     protected void dropApple(Level level, BlockPos pos, BlockState state) {
         if (state.getValue(AGE) == getMaxAge()) {
-            popResource(level, pos, new ItemStack(Items.APPLE));
+            popResource(level, pos, new ItemStack(level.getRandom().nextFloat() < Configs.SERVER.goldenAppleHarvestChance.get() ? Items.GOLDEN_APPLE : Items.APPLE));
         }
     }
 
