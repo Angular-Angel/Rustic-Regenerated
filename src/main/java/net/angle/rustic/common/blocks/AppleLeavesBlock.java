@@ -136,12 +136,6 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        super.playerWillDestroy(level, pos, state, player); //To change body of generated methods, choose Tools | Templates.
-        dropApple(level, pos, state);
-    }
-
-    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (state.getValue(AGE) < this.getMaxAge())
             return InteractionResult.FAIL;

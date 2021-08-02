@@ -29,12 +29,16 @@ public class Configs {
 
     public static class CommonConfig {
         public final ForgeConfigSpec.BooleanValue modifyBiomes;
+        public final ForgeConfigSpec.BooleanValue addNewBiomes;
         public final ForgeConfigSpec.BooleanValue addGiantTrees;
         public final ForgeConfigSpec.DoubleValue appleTreeFruitiness;
 
         CommonConfig(ForgeConfigSpec.Builder builder) {
             modifyBiomes = builder.comment("If Rustic should modify existing biomes.")
                 .define("modifyBiomes", true);
+            
+            addNewBiomes = builder.comment("If Rustic should add it;s new biomes: the apple orchards, the great oak forest, and the grand birch forest.")
+                .define("addNewBiomes", true);
             
             addGiantTrees = builder.comment("If Rustic should add giant versions of its trees, and of vanilla oaks and birches.")
                 .define("addGiantTrees", true);

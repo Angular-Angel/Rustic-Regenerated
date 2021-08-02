@@ -76,6 +76,7 @@
     ]
   ],
   "starts": [
+    "minecraft:swamp_hut",
     "minecraft:mineshaft",
     "minecraft:stronghold",
     "minecraft:ruined_portal"

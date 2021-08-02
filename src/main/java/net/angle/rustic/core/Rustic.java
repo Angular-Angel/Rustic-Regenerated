@@ -43,8 +43,11 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.blockplacers.SimpleBlockPlacer;
 import net.minecraft.world.level.levelgen.feature.configurations.HeightmapConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneDecoratorConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeatureSize;
 import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
@@ -116,9 +119,13 @@ public class Rustic {
     public static ConfiguredFeature<TreeConfiguration, ?> GREAT_OAK;
     public static ConfiguredFeature<TreeConfiguration, ?> GRAND_BIRCH;
     
+    public static ConfiguredFeature<?, ?> PATCH_ALLIUM;
+    public static ConfiguredFeature<?, ?> TREES_APPLE;
     public static ConfiguredFeature<?, ?> APPLE_TREES_02;
     public static ConfiguredFeature<?, ?> APPLE_TREES_001;
+    public static ConfiguredFeature<?, ?> TREES_MEDIUM_APPLE;
     public static ConfiguredFeature<?, ?> MEDIUM_APPLE_TREES_02;
+    public static ConfiguredFeature<?, ?> TREES_MEGA_APPLE;
     public static ConfiguredFeature<?, ?> TREES_GREAT_OAK;
     public static ConfiguredFeature<?, ?> GREAT_OAK_01;
     public static ConfiguredFeature<?, ?> TREES_GRAND_BIRCH;
@@ -164,6 +171,18 @@ public class Rustic {
         return VanillaBiomes.theVoidBiome();
     });
     
+    public static final RegistryObject<Biome> APPLE_ORCHARD_BIOME = BIOMES.register("apple_orchard", () -> {
+        return VanillaBiomes.theVoidBiome();
+    });
+    
+    public static final RegistryObject<Biome> MEDIUM_APPLE_ORCHARD_BIOME = BIOMES.register("medium_apple_orchard", () -> {
+        return VanillaBiomes.theVoidBiome();
+    });
+    
+    public static final RegistryObject<Biome> MEGA_APPLE_ORCHARD_BIOME = BIOMES.register("mega_apple_orchard", () -> {
+        return VanillaBiomes.theVoidBiome();
+    });
+    
     public Rustic() {
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
         modLoadingContext.registerConfig(ModConfig.Type.SERVER, Configs.SERVER_SPECIFICATION);
@@ -199,6 +218,14 @@ public class Rustic {
             ((SaplingBlock) Blocks.BIRCH_SAPLING).treeGrower = new GrandBirchTreeGrower();
         } else
             ((SaplingBlock) APPLE_SAPLING_BLOCK.get()).treeGrower = new NormalAppleTreeGrower();
+        
+        PATCH_ALLIUM = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:patch_allium", 
+            Feature.RANDOM_PATCH.configured((new RandomPatchConfiguration.GrassConfigurationBuilder(
+                new SimpleStateProvider(Blocks.ALLIUM.defaultBlockState()), 
+                new SimpleBlockPlacer())).tries(64).noProjection().build()).decorated(
+                    FeatureDecorator.SPREAD_32_ABOVE.configured(NoneDecoratorConfiguration.INSTANCE)).decorated(
+                    FeatureDecorator.HEIGHTMAP.configured(new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
+                    FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0))).squared()).count(10));
         
         BlockStateProvider appleLeavesProvider = new WeightedStateProvider(SimpleWeightedRandomList.<BlockState>builder()
                 .add(APPLE_LEAVES_BLOCK.get().defaultBlockState(), (int) (100 * Configs.COMMON.appleTreeFruitiness.get()))
@@ -264,7 +291,7 @@ public class Rustic {
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()),
                 new MegaJungleTrunkPlacer(19, 4, 15), new SimpleStateProvider(Blocks.OAK_LEAVES.defaultBlockState()),
                 new SimpleStateProvider(Blocks.OAK_SAPLING.defaultBlockState()),
-                new BlobFoliagePlacer(ConstantInt.of(4), ConstantInt.of(0), 5),
+                new FancyFoliagePlacer(ConstantInt.of(3), ConstantInt.of(4), 7),
                 new TwoLayersFeatureSize(1, 1, 2))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));
         
         GRAND_BIRCH = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:grand_birch",
@@ -275,6 +302,15 @@ public class Rustic {
                 new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 7),
                 new TwoLayersFeatureSize(1, 1, 2))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));
         
+        TREES_APPLE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:trees_apple", 
+                Feature.RANDOM_SELECTOR.configured(new RandomFeatureConfiguration(
+            ImmutableList.of(FANCY_APPLE_BEES_0002.weighted(0.02F)), 
+                APPLE_BEES_0002)).decorated(FeatureDecorator.HEIGHTMAP.configured(
+                    new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
+                        FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
+                        .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
+                            new FrequencyWithExtraChanceDecoratorConfiguration(5, 0.1F, 1))));
+        
         APPLE_TREES_02 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:apple_trees_02", 
                 Feature.RANDOM_SELECTOR.configured(new RandomFeatureConfiguration(
             ImmutableList.of(FANCY_APPLE_BEES_0002.weighted(0.02F)), 
@@ -283,6 +319,15 @@ public class Rustic {
                         FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
                         .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
                             new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.02F, 1))));
+        
+        TREES_MEDIUM_APPLE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:trees_medium_apple", 
+                Feature.RANDOM_SELECTOR.configured(new RandomFeatureConfiguration(
+            ImmutableList.of(FANCY_APPLE_BEES_0002.weighted(0.02F)), 
+                MEDIUM_APPLE_TREE)).decorated(FeatureDecorator.HEIGHTMAP.configured(
+                    new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
+                        FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
+                        .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
+                            new FrequencyWithExtraChanceDecoratorConfiguration(5, 0.1F, 1))));
         
         MEDIUM_APPLE_TREES_02 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:medium_apple_trees_02", 
                 Feature.RANDOM_SELECTOR.configured(new RandomFeatureConfiguration(
@@ -301,6 +346,15 @@ public class Rustic {
                         FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
                         .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
                             new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.001F, 1))));
+        
+        TREES_MEGA_APPLE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:trees_mega_apple", 
+                Feature.RANDOM_SELECTOR.configured(new RandomFeatureConfiguration(
+            ImmutableList.of(FANCY_APPLE_BEES_0002.weighted(0.02F)), 
+                MEGA_APPLE_TREE)).decorated(FeatureDecorator.HEIGHTMAP.configured(
+                    new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
+                        FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0)))
+                        .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
+                            new FrequencyWithExtraChanceDecoratorConfiguration(5, 0.1F, 1))));
         
         TREES_GREAT_OAK = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, "rustic:trees_great_oak", 
                 GREAT_OAK.decorated(FeatureDecorator.HEIGHTMAP.configured(
@@ -344,23 +398,34 @@ public class Rustic {
                         .squared()).decorated(FeatureDecorator.COUNT_EXTRA.configured(
                             new FrequencyWithExtraChanceDecoratorConfiguration(0, 0.005F, 1))));
         
-        ResourceKey<Biome> great_oak_forest = ResourceKey.create(Registry.BIOME_REGISTRY, GREAT_OAK_FOREST_BIOME.getId());
-        BiomeDictionary.addTypes(great_oak_forest, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
-        BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(great_oak_forest, 1));
+        if (Configs.COMMON.addNewBiomes.get()) {
         
-        ResourceKey<Biome> grand_birch_forest = ResourceKey.create(Registry.BIOME_REGISTRY, GRAND_BIRCH_FOREST_BIOME.getId());
-        BiomeDictionary.addTypes(grand_birch_forest, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
-        BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(grand_birch_forest, 1));
+            ResourceKey<Biome> great_oak_forest = ResourceKey.create(Registry.BIOME_REGISTRY, GREAT_OAK_FOREST_BIOME.getId());
+            BiomeDictionary.addTypes(great_oak_forest, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
+            BiomeManager.addBiome(BiomeManager.BiomeType.COOL, new BiomeManager.BiomeEntry(great_oak_forest, 1));
+
+            ResourceKey<Biome> grand_birch_forest = ResourceKey.create(Registry.BIOME_REGISTRY, GRAND_BIRCH_FOREST_BIOME.getId());
+            BiomeDictionary.addTypes(grand_birch_forest, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
+            BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(grand_birch_forest, 1));
+
+            ResourceKey<Biome> apple_orchard = ResourceKey.create(Registry.BIOME_REGISTRY, APPLE_ORCHARD_BIOME.getId());
+            BiomeDictionary.addTypes(apple_orchard, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
+            BiomeManager.addBiome(BiomeManager.BiomeType.COOL, new BiomeManager.BiomeEntry(apple_orchard, 4));
+
+            ResourceKey<Biome> medium_apple_orchard = ResourceKey.create(Registry.BIOME_REGISTRY, MEDIUM_APPLE_ORCHARD_BIOME.getId());
+            BiomeDictionary.addTypes(medium_apple_orchard, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
+            BiomeManager.addBiome(BiomeManager.BiomeType.COOL, new BiomeManager.BiomeEntry(medium_apple_orchard, 2));
+            
+            ResourceKey<Biome> mega_apple_orchard = ResourceKey.create(Registry.BIOME_REGISTRY, MEGA_APPLE_ORCHARD_BIOME.getId());
+            BiomeDictionary.addTypes(mega_apple_orchard, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
+            BiomeManager.addBiome(BiomeManager.BiomeType.COOL, new BiomeManager.BiomeEntry(mega_apple_orchard, 1));
+        }
     }
 
-    private void enqueueIMC(final InterModEnqueueEvent event) {
-    }
+    private void enqueueIMC(final InterModEnqueueEvent event) {}
 
-    public void processIMC(final InterModProcessEvent event) {
-    }
+    public void processIMC(final InterModProcessEvent event) {}
 
-    // You can use EventBusSubscriber to automatically subscribe events on the contained class (this is subscribing to the MOD
-    // Event bus for receiving Registry Events)
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
     public static class RegistryEvents {
         @SubscribeEvent
