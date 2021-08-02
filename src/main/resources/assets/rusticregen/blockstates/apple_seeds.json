@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "age=0": { "model": "rusticregen:block/apple_seeds_0" },
+
+        "age=1": { "model": "rusticregen:block/apple_seeds_1" }
+    }
+}

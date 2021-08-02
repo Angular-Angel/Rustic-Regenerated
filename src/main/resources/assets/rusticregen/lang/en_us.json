@@ -1,0 +1,11 @@
+{
+    "language.name": "English",
+    "language.region": "United States",
+    "language.code": "en_us",
+    
+    "block.rusticregen.apple_leaves": "Apple Leaves",
+    "block.rusticregen.apple_sapling": "Apple Sapling",
+    "block.rusticregen.apple_seeds": "Apple Seeds",
+    "block.rusticregen.crossed_logs": "Crossed Logs",
+    "item.rusticregen.apple_seeds": "Apple Seeds"
+}

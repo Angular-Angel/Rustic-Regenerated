@@ -1,0 +1,26 @@
+{   
+    "multipart": [
+        { "apply": { "model": "minecraft:block/oak_leaves" } },
+        {
+            "when": { "age": "1" },
+            "apply": [{"model": "rusticregen:block/apple_0"}, {"model": "rusticregen:block/apple_0", "y": 90}, 
+                      {"model": "rusticregen:block/apple_0", "y": 180}, {"model": "rusticregen:block/apple_0", "y": 270},
+                      {"model": "rusticregen:block/apple_0_1"}, {"model": "rusticregen:block/apple_0_1", "y": 90}, 
+                      {"model": "rusticregen:block/apple_0_1", "y": 180}, {"model": "rusticregen:block/apple_0_1", "y": 270}]
+        },
+        {
+            "when": { "age": "2" },
+            "apply": [{"model": "rusticregen:block/apple_1"}, {"model": "rusticregen:block/apple_1", "y": 90}, 
+                      {"model": "rusticregen:block/apple_1", "y": 180}, {"model": "rusticregen:block/apple_1", "y": 270},
+                      {"model": "rusticregen:block/apple_1_1"}, {"model": "rusticregen:block/apple_1_1", "y": 90}, 
+                      {"model": "rusticregen:block/apple_1_1", "y": 180}, {"model": "rusticregen:block/apple_1_1", "y": 270}]
+        },
+        {
+            "when": { "age": "3" },
+            "apply": [{"model": "rusticregen:block/apple_2"}, {"model": "rusticregen:block/apple_2", "y": 90}, 
+                      {"model": "rusticregen:block/apple_2", "y": 180}, {"model": "rusticregen:block/apple_2", "y": 270},
+                      {"model": "rusticregen:block/apple_2_1"}, {"model": "rusticregen:block/apple_2_1", "y": 90}, 
+                      {"model": "rusticregen:block/apple_2_1", "y": 180}, {"model": "rusticregen:block/apple_2_1", "y": 270}]
+        }
+    ]
+}
