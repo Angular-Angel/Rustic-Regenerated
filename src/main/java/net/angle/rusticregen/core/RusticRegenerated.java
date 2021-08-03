@@ -34,6 +34,7 @@ import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SaplingBlock;
@@ -407,7 +408,7 @@ public class RusticRegenerated {
 
             ResourceKey<Biome> grand_birch_forest = ResourceKey.create(Registry.BIOME_REGISTRY, GRAND_BIRCH_FOREST_BIOME.getId());
             BiomeDictionary.addTypes(grand_birch_forest, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
-            BiomeManager.addBiome(BiomeManager.BiomeType.WARM, new BiomeManager.BiomeEntry(grand_birch_forest, 1));
+            BiomeManager.addBiome(BiomeManager.BiomeType.COOL, new BiomeManager.BiomeEntry(grand_birch_forest, 1));
 
             ResourceKey<Biome> apple_orchard = ResourceKey.create(Registry.BIOME_REGISTRY, APPLE_ORCHARD_BIOME.getId());
             BiomeDictionary.addTypes(apple_orchard, Type.OVERWORLD, Type.FOREST, Type.RARE);
@@ -458,48 +459,48 @@ public class RusticRegenerated {
         public static void loadBiome(BiomeLoadingEvent event) {
             if (!Configs.COMMON.modifyBiomes.get())
                 return;
+            
             ResourceKey<Biome> biome = ResourceKey.create(Registry.BIOME_REGISTRY, event.getName());
+            String name = biome.toString().split(":")[2];
             
-            if (!BiomeDictionary.getTypes(biome).contains(Type.OVERWORLD))
+            BiomeCategory category = event.getCategory();
+            if (category == BiomeCategory.NETHER || category == BiomeCategory.THEEND 
+                || category == BiomeCategory.UNDERGROUND || category == BiomeCategory.NONE)
                 return;
             
-            if (BiomeDictionary.getTypes(biome).contains(Type.SAVANNA) || 
-                BiomeDictionary.getTypes(biome).contains(Type.JUNGLE) ||
-                BiomeDictionary.getTypes(biome).contains(Type.HOT))
+            if (event.getClimate().temperature > 1 || event.getClimate().downfall < 0.5)
                 return;
             
-            if (BiomeDictionary.getTypes(biome).contains(Type.PLAINS) || BiomeDictionary.getTypes(biome).contains(Type.RIVER)) {
+            if (category == BiomeCategory.PLAINS || category == BiomeCategory.RIVER || category == BiomeCategory.SWAMP) {
                 event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_001);
             }
-            
-            if (BiomeDictionary.getTypes(biome).contains(Type.FOREST)) {
-                String name = biome.toString();
+            boolean addGiants = Configs.COMMON.addGiantTrees.get() && Configs.COMMON.addGiantTreesInNonGiantBiomes.get();
+            if (category == BiomeCategory.FOREST || category == BiomeCategory.TAIGA) {
                 if (name.contains("birch")) {
                     //System.out.println("Birch: " + name);
                     event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_001);
-                    if (Configs.COMMON.addGiantTrees.get()) {
+                    if (addGiants) {
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GRAND_BIRCH_01);
                         if (name.contains("tall"))
                             event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GRAND_BIRCH_01);
                     }
                 } else if (name.contains("dark")) {
                     //System.out.println("Dark: " + name);
-                    if (Configs.COMMON.addGiantTrees.get()) {
+                    if (addGiants) {
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEDIUM_APPLE_TREES_02);
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
                     } else
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_02);
-                } else if (BiomeDictionary.getTypes(biome).contains(Type.COLD) || BiomeDictionary.getTypes(biome).contains(Type.CONIFEROUS) ||
-                        name.contains("spruce") || name.contains("taiga")) {
+                } else if (category == BiomeCategory.TAIGA || event.getClimate().temperature < 0.4 || name.contains("spruce")) {
                     //System.out.println("Spruce/Taiga: " + name);
-                    if (Configs.COMMON.addGiantTrees.get()) {
+                    if (addGiants) {
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEGA_PINE_005);
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEGA_SPRUCE_005);
                     }
                 } else {
                     //System.out.println("Forest: " + name);
                     event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_02);
-                    if (Configs.COMMON.addGiantTrees.get())
+                    if (addGiants)
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
                 }
             }

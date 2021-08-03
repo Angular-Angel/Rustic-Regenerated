@@ -31,19 +31,23 @@ public class Configs {
         public final ForgeConfigSpec.BooleanValue modifyBiomes;
         public final ForgeConfigSpec.BooleanValue addNewBiomes;
         public final ForgeConfigSpec.BooleanValue addGiantTrees;
+        public final ForgeConfigSpec.BooleanValue addGiantTreesInNonGiantBiomes;
         public final ForgeConfigSpec.DoubleValue appleTreeFruitiness;
 
         CommonConfig(ForgeConfigSpec.Builder builder) {
-            modifyBiomes = builder.comment("If Rustic should modify existing biomes.")
+            modifyBiomes = builder.comment("If Rustic Regenerated should modify existing biomes.")
                 .define("modifyBiomes", true);
             
-            addNewBiomes = builder.comment("If Rustic should add it;s new biomes: the apple orchards, the great oak forest, and the grand birch forest.")
+            addNewBiomes = builder.comment("If Rustic Regenerated should add it;s new biomes: the apple orchards, the great oak forest, and the grand birch forest.")
                 .define("addNewBiomes", true);
             
-            addGiantTrees = builder.comment("If Rustic should add giant versions of its trees, and of vanilla oaks and birches.")
+            addGiantTrees = builder.comment("If Rustic Regenerated should add giant versions of its trees, and of vanilla oaks and birches, including via sapling growth.")
                 .define("addGiantTrees", true);
+            
+            addGiantTreesInNonGiantBiomes = builder.comment("If Rustic Regenerated should add the occasional giant tree in non-giant biomes via world generation.")
+                .define("addGiantTreesInNonGiantBiomes", true);
 
-            appleTreeFruitiness = builder.comment("This determines what percentage of an apple trees leaves are apple leaves, instead of oak leaves.")
+            appleTreeFruitiness = builder.comment("What percentage of an apple trees leaves are apple leaves, instead of oak leaves. 0 is all oak leaves, and 1 is all apple leaves.")
                 .defineInRange("appleTreeFruitiness", 0.55d, 0, 1);
         }
     }
