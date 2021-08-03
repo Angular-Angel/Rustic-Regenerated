@@ -1,5 +1,16 @@
 {
-    "variants": {
-        "": { "model": "rusticregen:stake" }
-    }
+    "multipart": [
+        {
+            "when": { "axis": "x"},
+            "apply": { "model": "rusticregen:block/stake", "x": 90, "y": 90} 
+        },
+        {
+            "when": { "axis": "y"},
+            "apply": { "model": "rusticregen:block/stake"} 
+        },
+        {
+            "when": { "axis": "z"},
+            "apply": { "model": "rusticregen:block/stake", "x": 90} 
+        }
+    ]
 }

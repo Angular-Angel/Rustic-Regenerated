@@ -12,6 +12,7 @@ import net.angle.rusticregen.common.blocks.AppleLeavesBlock;
 import net.angle.rusticregen.common.blocks.AppleSaplingBlock;
 import net.angle.rusticregen.common.blocks.AppleSeedsBlock;
 import net.angle.rusticregen.common.blocks.CrossedLogsBlock;
+import net.angle.rusticregen.common.blocks.StakeBlock;
 import net.angle.rusticregen.common.grower.GrandBirchTreeGrower;
 import net.angle.rusticregen.common.grower.GreatOakTreeGrower;
 import net.angle.rusticregen.common.grower.NormalAppleTreeGrower;
@@ -145,6 +146,8 @@ public class RusticRegenerated {
     
     public static final RegistryObject<Block> CROSSED_LOGS_BLOCK = BLOCKS.register("crossed_logs", () -> new CrossedLogsBlock());
     
+    public static final RegistryObject<Block> STAKE_BLOCK = BLOCKS.register("stake", () -> new StakeBlock());
+    
     public static final RegistryObject<Item> APPLE_LEAVES_ITEM = ITEMS.register("apple_leaves", () -> {
         return registerLeafItem(new BlockItem(APPLE_LEAVES_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
     });
@@ -157,8 +160,12 @@ public class RusticRegenerated {
         return new ItemNameBlockItem(APPLE_SEEDS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
     });
     
-    public static final RegistryObject<Item> CROOSSED_LOG_ITEM = ITEMS.register("crossed_logs", () -> {
+    public static final RegistryObject<Item> CROSSED_LOG_ITEM = ITEMS.register("crossed_logs", () -> {
         return new BlockItem(CROSSED_LOGS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
+    });
+    
+    public static final RegistryObject<Item> STAKE_ITEM = ITEMS.register("stake", () -> {
+        return new BlockItem(STAKE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
     });
     
     public static final RegistryObject<Biome> GREAT_OAK_FOREST_BIOME = BIOMES.register("great_oak_forest", () -> {

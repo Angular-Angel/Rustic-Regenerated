@@ -30,6 +30,10 @@
         {
             "when": { "type": "top|double", "facing": "west" },
             "apply": {"model": "rusticregen:block/crossed_logs_top", "y": 90}
+        },
+        {
+            "when": { "stake": "true" },
+            "apply": {"model": "rusticregen:block/stake"}
         }
     ]
 }

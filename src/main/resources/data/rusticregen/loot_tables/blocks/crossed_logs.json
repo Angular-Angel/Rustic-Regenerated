@@ -29,6 +29,25 @@
                     "name": "rusticregen:crossed_logs"
                 }
             ]
+        },
+        {
+            "rolls": 1.0,
+            "bonus_rolls": 0.0,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "conditions": [
+                        {
+                            "condition": "minecraft:block_state_property",
+                            "block": "rusticregen:crossed_logs",
+                            "properties": {
+                                "stake": "true"
+                            }
+                        }
+                    ],
+                    "name": "rusticregen:stake"
+                }
+            ]
         }
     ]
 }
