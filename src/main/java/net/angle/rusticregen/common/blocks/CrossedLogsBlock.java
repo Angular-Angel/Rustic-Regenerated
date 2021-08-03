@@ -46,11 +46,6 @@ public class CrossedLogsBlock extends SlabBlock {
     }
     
     @Override
-    public boolean useShapeForLightOcclusion(BlockState p_56395_) {
-        return true;
-    }
-    
-    @Override
     public boolean canPlaceLiquid(BlockGetter getter, BlockPos pos, BlockState state, Fluid fluid) {
         return !state.getValue(WATERLOGGED) && fluid == Fluids.WATER;
     }
