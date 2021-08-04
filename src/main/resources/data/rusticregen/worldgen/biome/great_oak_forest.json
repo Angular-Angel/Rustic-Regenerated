@@ -170,7 +170,7 @@
   "player_spawn_friendly": true,
   "precipitation": "rain",
   "temperature": 0.7,
-  "downfall": 0.8,
+  "downfall": 0.95,
   "category": "forest",
   "depth": 0.1
 }

@@ -8,11 +8,8 @@ package net.angle.rusticregen.core;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.OptionalInt;
-import net.angle.rusticregen.common.blocks.AppleLeavesBlock;
-import net.angle.rusticregen.common.blocks.AppleSaplingBlock;
-import net.angle.rusticregen.common.blocks.AppleSeedsBlock;
-import net.angle.rusticregen.common.blocks.CrossedLogsBlock;
-import net.angle.rusticregen.common.blocks.StakeBlock;
+import net.angle.rusticregen.common.blocks.*;
+import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
 import net.angle.rusticregen.common.grower.GrandBirchTreeGrower;
 import net.angle.rusticregen.common.grower.GreatOakTreeGrower;
 import net.angle.rusticregen.common.grower.NormalAppleTreeGrower;
@@ -24,58 +21,40 @@ import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.Features;
 import net.minecraft.data.worldgen.biome.VanillaBiomes;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.SimpleWeightedRandomList;
-import net.minecraft.util.valueproviders.ConstantInt;
-import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemNameBlockItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.valueproviders.*;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.blockplacers.SimpleBlockPlacer;
-import net.minecraft.world.level.levelgen.feature.configurations.HeightmapConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneDecoratorConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.RandomPatchConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
-import net.minecraft.world.level.levelgen.feature.featuresize.ThreeLayersFeatureSize;
-import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlacer;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.FancyFoliagePlacer;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaJungleFoliagePlacer;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.MegaPineFoliagePlacer;
-import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
-import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
-import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
-import net.minecraft.world.level.levelgen.feature.treedecorators.AlterGroundDecorator;
-import net.minecraft.world.level.levelgen.feature.treedecorators.BeehiveDecorator;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.DarkOakTrunkPlacer;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.FancyTrunkPlacer;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.GiantTrunkPlacer;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.MegaJungleTrunkPlacer;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
+import net.minecraft.world.level.levelgen.feature.configurations.*;
+import net.minecraft.world.level.levelgen.feature.featuresize.*;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.*;
+import net.minecraft.world.level.levelgen.feature.stateproviders.*;
+import net.minecraft.world.level.levelgen.feature.treedecorators.*;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.*;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 import net.minecraft.world.level.levelgen.placement.FrequencyWithExtraChanceDecoratorConfiguration;
 import net.minecraft.world.level.levelgen.placement.WaterDepthThresholdConfiguration;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -88,6 +67,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.minecraftforge.client.model.ModelLoader;
 
 /**
  *
@@ -135,6 +115,8 @@ public class RusticRegenerated {
     
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+    
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     
     private static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(ForgeRegistries.BIOMES, MODID);
@@ -148,6 +130,8 @@ public class RusticRegenerated {
     public static final RegistryObject<Block> CROSSED_LOGS_BLOCK = BLOCKS.register("crossed_logs", () -> new CrossedLogsBlock());
     
     public static final RegistryObject<Block> STAKE_BLOCK = BLOCKS.register("stake", () -> new StakeBlock());
+    
+    public static final RegistryObject<BlockEntityType<CrossedLogsEntity>> CROSSED_LOGS_ENTITY_TYPE = BLOCK_ENTITIES.register("crossed_logs", () -> BlockEntityType.Builder.of(CrossedLogsEntity::new, CROSSED_LOGS_BLOCK.get()).build(null));
     
     public static final RegistryObject<Item> APPLE_LEAVES_ITEM = ITEMS.register("apple_leaves", () -> {
         return registerLeafItem(new BlockItem(APPLE_LEAVES_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
@@ -199,9 +183,13 @@ public class RusticRegenerated {
         
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
+        BLOCK_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
         BIOMES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        
+        
     }
     
     private static Block registerLeafBlock(Block block) {
@@ -221,9 +209,9 @@ public class RusticRegenerated {
         } else
             ((SaplingBlock) APPLE_SAPLING_BLOCK.get()).treeGrower = new NormalAppleTreeGrower();
         
-        PATCH_ALLIUM = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":patch_allium", 
+        PATCH_ALLIUM = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":patch_allium",
             Feature.RANDOM_PATCH.configured((new RandomPatchConfiguration.GrassConfigurationBuilder(
-                new SimpleStateProvider(Blocks.ALLIUM.defaultBlockState()), 
+                new SimpleStateProvider(Blocks.ALLIUM.defaultBlockState()),
                 new SimpleBlockPlacer())).tries(64).noProjection().build()).decorated(
                     FeatureDecorator.SPREAD_32_ABOVE.configured(NoneDecoratorConfiguration.INSTANCE)).decorated(
                     FeatureDecorator.HEIGHTMAP.configured(new HeightmapConfiguration(Heightmap.Types.OCEAN_FLOOR)).decorated(
@@ -235,27 +223,27 @@ public class RusticRegenerated {
         
         APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
-                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                new StraightTrunkPlacer(4, 2, 0), appleLeavesProvider, 
-                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
-                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3), 
+                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()),
+                new StraightTrunkPlacer(4, 2, 0), appleLeavesProvider,
+                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()),
+                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
                 new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
         
-        APPLE_BEES_0002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":apple_bees_0002", 
+        APPLE_BEES_0002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":apple_bees_0002",
                 Feature.TREE.configured(APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(0.0002F)))));
         
-        APPLE_BEES_002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":apple_bees_002", 
+        APPLE_BEES_002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":apple_bees_002",
                 Feature.TREE.configured(APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(0.002F)))));
         
-        APPLE_BEES_005 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":apple_bees_005", 
+        APPLE_BEES_005 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":apple_bees_005",
                 Feature.TREE.configured(APPLE_TREE.config().withDecorators(ImmutableList.of(new BeehiveDecorator(0.005F)))));
         
         FANCY_APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":fancy_apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
-                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
-                new FancyTrunkPlacer(3, 11, 0), appleLeavesProvider, 
-                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
-                new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4), 
+                new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()),
+                new FancyTrunkPlacer(3, 11, 0), appleLeavesProvider,
+                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()),
+                new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))).ignoreVines().build()));
         
         FANCY_APPLE_BEES_0002 = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":fancy_apple_bees_0002", 
@@ -449,6 +437,11 @@ public class RusticRegenerated {
         public static void clientSetup(FMLClientSetupEvent event) {
             ItemBlockRenderTypes.setRenderLayer(APPLE_SAPLING_BLOCK.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(APPLE_SEEDS_BLOCK.get(), RenderType.cutout());
+        }
+        
+        @SubscribeEvent
+        public static void onRegisterModelLoaders(ModelRegistryEvent event) {
+            //ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "leaf_models"), );
         }
         
     }
