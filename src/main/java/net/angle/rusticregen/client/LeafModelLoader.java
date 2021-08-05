@@ -20,6 +20,7 @@ import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -81,7 +82,7 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
             if (state == null)
                 return Lists.newArrayList();
-            return getQuads(state, (LeafCoveredModelData) extraData, side, rand);
+            return getQuads(state, extraData.getData(LeafCoveredModelData.PROPERTY), side, rand);
         }
         
         public List<BakedQuad> getQuads(BlockState state, LeafCoveredModelData data, Direction side, Random rand) {
