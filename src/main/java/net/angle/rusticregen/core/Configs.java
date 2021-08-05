@@ -31,18 +31,26 @@ public class Configs {
         public final ForgeConfigSpec.BooleanValue modifyBiomes;
         public final ForgeConfigSpec.BooleanValue addNewBiomes;
         public final ForgeConfigSpec.BooleanValue addGiantTrees;
+        public final ForgeConfigSpec.BooleanValue addGiantTreeGrowth;
+        public final ForgeConfigSpec.BooleanValue addAppleTreesInNonAppleBiomes;
         public final ForgeConfigSpec.BooleanValue addGiantTreesInNonGiantBiomes;
         public final ForgeConfigSpec.DoubleValue appleTreeFruitiness;
 
         CommonConfig(ForgeConfigSpec.Builder builder) {
-            modifyBiomes = builder.comment("If Rustic Regenerated should modify existing biomes.")
+            modifyBiomes = builder.comment("If Rustic Regenerated should modify existing biomes to add apples and its giant trees.")
                 .define("modifyBiomes", true);
             
-            addNewBiomes = builder.comment("If Rustic Regenerated should add it;s new biomes: the apple orchards, the great oak forest, and the grand birch forest.")
+            addNewBiomes = builder.comment("If Rustic Regenerated should add its new biomes: the apple orchards, the great oak forest, and the grand birch forest.")
                 .define("addNewBiomes", true);
             
             addGiantTrees = builder.comment("If Rustic Regenerated should add giant versions of its trees, and of vanilla oaks and birches, including via sapling growth.")
                 .define("addGiantTrees", true);
+            
+            addGiantTreeGrowth = builder.comment("If Rustic Regenerated should make apple, oak, and birch spalings gorw into giant trees when planted 2*2.")
+                .define("addGiantTreeGrowth", true);
+            
+            addAppleTreesInNonAppleBiomes = builder.comment("If Rustic Regenerated should add the occasional apple tree in non-apple biomes via world generation.")
+                .define("addAppleTreesInNonAppleBiomes", true);
             
             addGiantTreesInNonGiantBiomes = builder.comment("If Rustic Regenerated should add the occasional giant tree in non-giant biomes via world generation.")
                 .define("addGiantTreesInNonGiantBiomes", true);

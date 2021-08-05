@@ -1,5 +1,5 @@
 
-1.17.1-1.0.3-RELEASE:
-*Added numerous recipes for Crossed Logs and Stakes, including ones to turn both into sticks.
-*Added config option to set whether or not apples will grow on persistent leaves.
+1.17.1-1.0.3-Beta:
+*Added numerous recipes for Crossed Logs and Stakes, including ones to turn both into sticks, and made the recipes unlock in the recipe book when you get their components
+*Added config option to set whether or not apples will grow on persistent leaves, whether or not to allow 282 growth for apples, oak, and birch, and whether or not to add apple trees to non-apple biomes.
 *Adjust downfall parameters for some modded biomes.

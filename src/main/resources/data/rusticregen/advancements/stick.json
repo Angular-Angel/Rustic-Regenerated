@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "rusticregen:crossed_logs_from_sticks",
+      "rusticregen:stakes_from_sticks"
+    ]
+  },
+  "criteria": {
+    "has_wooden_rod": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:rods/wooden"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wooden_rod"
+    ]
+  ]
+}

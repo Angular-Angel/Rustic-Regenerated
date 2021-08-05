@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.LongPredicate;
 import net.angle.rusticregen.client.LeafModelLoader.LeafCoveredGeometry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -32,7 +31,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -46,7 +44,7 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
 
     @Override
     public LeafCoveredGeometry read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new LeafCoveredGeometry();
     }
 
     @Override

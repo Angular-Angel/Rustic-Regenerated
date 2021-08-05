@@ -1,0 +1,25 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "rusticregen:apple_seeds"
+    ]
+  },
+  "criteria": {
+    "has_apple": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:apple"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_apple"
+    ]
+  ]
+}

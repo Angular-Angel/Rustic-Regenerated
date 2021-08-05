@@ -22,6 +22,7 @@ import net.minecraft.data.worldgen.Features;
 import net.minecraft.data.worldgen.biome.VanillaBiomes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.RecipeBook;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.*;
 import net.minecraft.world.item.*;
@@ -179,8 +180,6 @@ public class RusticRegenerated {
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
         BIOMES.register(FMLJavaModLoadingContext.get().getModEventBus());
-        
-        
     }
     
     public static Block registerLeafBlock(Block block) {
@@ -194,7 +193,7 @@ public class RusticRegenerated {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        if (Configs.COMMON.addGiantTrees.get()) {
+        if (Configs.COMMON.addGiantTrees.get() && Configs.COMMON.addGiantTreeGrowth.get()) {
             ((SaplingBlock) Blocks.OAK_SAPLING).treeGrower = new GreatOakTreeGrower();
             ((SaplingBlock) Blocks.BIRCH_SAPLING).treeGrower = new GrandBirchTreeGrower();
         } else
@@ -455,14 +454,18 @@ public class RusticRegenerated {
             if (event.getClimate().temperature > 1 || event.getClimate().downfall < 0.5)
                 return;
             
+            boolean addApples = Configs.COMMON.addAppleTreesInNonAppleBiomes.get();
             if (category == BiomeCategory.PLAINS || category == BiomeCategory.RIVER || category == BiomeCategory.SWAMP) {
-                event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_001);
+                if (addApples)
+                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_001);
             }
+            
             boolean addGiants = Configs.COMMON.addGiantTrees.get() && Configs.COMMON.addGiantTreesInNonGiantBiomes.get();
             if (category == BiomeCategory.FOREST || category == BiomeCategory.TAIGA) {
                 if (name.contains("birch")) {
                     //System.out.println("Birch: " + name);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_001);
+                    if (addApples)
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_001);
                     if (addGiants) {
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GRAND_BIRCH_01);
                         if (name.contains("tall"))
@@ -471,9 +474,10 @@ public class RusticRegenerated {
                 } else if (name.contains("dark")) {
                     //System.out.println("Dark: " + name);
                     if (addGiants) {
-                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEDIUM_APPLE_TREES_02);
+                        if (addApples)
+                            event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, MEDIUM_APPLE_TREES_02);
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
-                    } else
+                    } else if (addApples)
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_02);
                 } else if (category == BiomeCategory.TAIGA || event.getClimate().temperature < 0.4 || name.contains("spruce")) {
                     //System.out.println("Spruce/Taiga: " + name);
@@ -483,7 +487,8 @@ public class RusticRegenerated {
                     }
                 } else {
                     //System.out.println("Forest: " + name);
-                    event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_02);
+                    if (addApples)
+                        event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, APPLE_TREES_02);
                     if (addGiants)
                         event.getGeneration().addFeature(GenerationStep.Decoration.VEGETAL_DECORATION, GREAT_OAK_01);
                 }
