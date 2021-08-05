@@ -34,6 +34,10 @@
         {
             "when": { "stake": "true" },
             "apply": {"model": "rusticregen:block/stake"}
+        },
+        {
+            "when": { "leaves": "true" },
+            "apply": {"model": "rusticregen:block/leaf_covering"}
         }
     ]
 }
