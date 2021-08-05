@@ -79,6 +79,7 @@ import net.minecraftforge.client.model.ModelLoader;
 public class RusticRegenerated {
     public static final String MODID = "rusticregen";
     public static final String NAME = "Rustic Regenerated";
+    public static RusticRegenerated INSTANCE;
     
     public static ArrayList<Block> leafBlocks = new ArrayList<>();
     public static ArrayList<Item> leafItems = new ArrayList<>();
@@ -113,44 +114,33 @@ public class RusticRegenerated {
     public static ConfiguredFeature<?, ?> MEGA_PINE_005;
     public static ConfiguredFeature<?, ?> MEGA_SPRUCE_005;
     
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
     
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     
     private static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(ForgeRegistries.BIOMES, MODID);
-
-    public static final RegistryObject<Block> APPLE_LEAVES_BLOCK = BLOCKS.register("apple_leaves", () -> registerLeafBlock(new AppleLeavesBlock()));
     
-    public static final RegistryObject<Block> APPLE_SAPLING_BLOCK = BLOCKS.register("apple_sapling", () -> new AppleSaplingBlock());
-
-    public static final RegistryObject<Block> APPLE_SEEDS_BLOCK = BLOCKS.register("apple_seeds", () -> new AppleSeedsBlock());
-    
-    public static final RegistryObject<Block> CROSSED_LOGS_BLOCK = BLOCKS.register("crossed_logs", () -> new CrossedLogsBlock());
-    
-    public static final RegistryObject<Block> STAKE_BLOCK = BLOCKS.register("stake", () -> new StakeBlock());
-    
-    public static final RegistryObject<BlockEntityType<CrossedLogsEntity>> CROSSED_LOGS_ENTITY_TYPE = BLOCK_ENTITIES.register("crossed_logs", () -> BlockEntityType.Builder.of(CrossedLogsEntity::new, CROSSED_LOGS_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<CrossedLogsEntity>> CROSSED_LOGS_ENTITY_TYPE = 
+            BLOCK_ENTITIES.register("crossed_logs", () -> BlockEntityType.Builder.of(CrossedLogsEntity::new, ModBlocks.CROSSED_LOGS_BLOCK.get()).build(null));
     
     public static final RegistryObject<Item> APPLE_LEAVES_ITEM = ITEMS.register("apple_leaves", () -> {
-        return registerLeafItem(new BlockItem(APPLE_LEAVES_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
+        return registerLeafItem(new BlockItem(ModBlocks.APPLE_LEAVES_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
     });
     
     public static final RegistryObject<Item> APPLE_SAPLING_ITEM = ITEMS.register("apple_sapling", () -> {
-        return new BlockItem(APPLE_SAPLING_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+        return new BlockItem(ModBlocks.APPLE_SAPLING_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
     });
     
     public static final RegistryObject<Item> APPLE_SEEDS_ITEM = ITEMS.register("apple_seeds", () -> {
-        return new ItemNameBlockItem(APPLE_SEEDS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+        return new ItemNameBlockItem(ModBlocks.APPLE_SEEDS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
     });
     
     public static final RegistryObject<Item> CROSSED_LOG_ITEM = ITEMS.register("crossed_logs", () -> {
-        return new BlockItem(CROSSED_LOGS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
+        return new BlockItem(ModBlocks.CROSSED_LOGS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
     });
     
     public static final RegistryObject<Item> STAKE_ITEM = ITEMS.register("stake", () -> {
-        return new BlockItem(STAKE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
+        return new BlockItem(ModBlocks.STAKE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
     });
     
     public static final RegistryObject<Biome> GREAT_OAK_FOREST_BIOME = BIOMES.register("great_oak_forest", () -> {
@@ -174,6 +164,7 @@ public class RusticRegenerated {
     });
     
     public RusticRegenerated() {
+        INSTANCE = this;
         ModLoadingContext modLoadingContext = ModLoadingContext.get();
         modLoadingContext.registerConfig(ModConfig.Type.SERVER, Configs.SERVER_SPECIFICATION);
         modLoadingContext.registerConfig(ModConfig.Type.COMMON, Configs.COMMON_SPECIFICATION);
@@ -181,7 +172,7 @@ public class RusticRegenerated {
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         
-        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModBlocks.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
         BLOCK_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
         
@@ -192,7 +183,7 @@ public class RusticRegenerated {
         
     }
     
-    private static Block registerLeafBlock(Block block) {
+    public static Block registerLeafBlock(Block block) {
         leafBlocks.add(block);
         return block;
     }
@@ -207,7 +198,7 @@ public class RusticRegenerated {
             ((SaplingBlock) Blocks.OAK_SAPLING).treeGrower = new GreatOakTreeGrower();
             ((SaplingBlock) Blocks.BIRCH_SAPLING).treeGrower = new GrandBirchTreeGrower();
         } else
-            ((SaplingBlock) APPLE_SAPLING_BLOCK.get()).treeGrower = new NormalAppleTreeGrower();
+            ((SaplingBlock) ModBlocks.APPLE_SAPLING_BLOCK.get()).treeGrower = new NormalAppleTreeGrower();
         
         PATCH_ALLIUM = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":patch_allium",
             Feature.RANDOM_PATCH.configured((new RandomPatchConfiguration.GrassConfigurationBuilder(
@@ -218,14 +209,14 @@ public class RusticRegenerated {
                     FeatureDecorator.WATER_DEPTH_THRESHOLD.configured(new WaterDepthThresholdConfiguration(0))).squared()).count(10));
         
         BlockStateProvider appleLeavesProvider = new WeightedStateProvider(SimpleWeightedRandomList.<BlockState>builder()
-                .add(APPLE_LEAVES_BLOCK.get().defaultBlockState(), (int) (100 * Configs.COMMON.appleTreeFruitiness.get()))
+                .add(ModBlocks.APPLE_LEAVES_BLOCK.get().defaultBlockState(), (int) (100 * Configs.COMMON.appleTreeFruitiness.get()))
                 .add(Blocks.OAK_LEAVES.defaultBlockState(), (int) (100 * (1 - Configs.COMMON.appleTreeFruitiness.get()))).build());
         
         APPLE_TREE = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":apple_tree",
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()),
                 new StraightTrunkPlacer(4, 2, 0), appleLeavesProvider,
-                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()),
+                new SimpleStateProvider(ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState()),
                 new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
                 new TwoLayersFeatureSize(1, 0, 1))).ignoreVines().build()));
         
@@ -242,7 +233,7 @@ public class RusticRegenerated {
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()),
                 new FancyTrunkPlacer(3, 11, 0), appleLeavesProvider,
-                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()),
+                new SimpleStateProvider(ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState()),
                 new FancyFoliagePlacer(ConstantInt.of(2), ConstantInt.of(4), 4),
                 new TwoLayersFeatureSize(0, 0, 0, OptionalInt.of(4)))).ignoreVines().build()));
         
@@ -264,7 +255,7 @@ public class RusticRegenerated {
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
                 new DarkOakTrunkPlacer(6, 1, 1), appleLeavesProvider, 
-                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
+                new SimpleStateProvider(ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
                 new MegaJungleFoliagePlacer(ConstantInt.of(2), ConstantInt.of(2), 3), 
                 new ThreeLayersFeatureSize(1, 1, 0, 1, 2, OptionalInt.empty()))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));
         
@@ -272,7 +263,7 @@ public class RusticRegenerated {
             Feature.TREE.configured((new TreeConfiguration.TreeConfigurationBuilder(
                 new SimpleStateProvider(Blocks.OAK_LOG.defaultBlockState()), 
                 new GiantTrunkPlacer(22, 2, 2), appleLeavesProvider,
-                new SimpleStateProvider(APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
+                new SimpleStateProvider(ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState()), 
                 new MegaPineFoliagePlacer(ConstantInt.of(0), ConstantInt.of(0), UniformInt.of(13, 17)), 
                 new TwoLayersFeatureSize(1, 1, 2))).ignoreVines().decorators(ImmutableList.of(groundDecorator)).build()));
         
@@ -435,8 +426,8 @@ public class RusticRegenerated {
         
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
-            ItemBlockRenderTypes.setRenderLayer(APPLE_SAPLING_BLOCK.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(APPLE_SEEDS_BLOCK.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SAPLING_BLOCK.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SEEDS_BLOCK.get(), RenderType.cutout());
         }
         
         @SubscribeEvent

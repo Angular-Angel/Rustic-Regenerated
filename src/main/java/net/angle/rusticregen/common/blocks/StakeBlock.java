@@ -45,7 +45,7 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
     protected static final VoxelShape STAKE_AABB_Z = Block.box(6.0D, 6.0D, 0.0F, 10.0D, 10.0D, 16.0D);
     
     public StakeBlock() {
-        super(Properties.copy(RusticRegenerated.CROSSED_LOGS_BLOCK.get()));
+        super(Properties.copy(ModBlocks.CROSSED_LOGS_BLOCK.get()));
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
     }
     
@@ -107,7 +107,7 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
         ItemStack itemInHand = player.getItemInHand(hand);
         if (itemInHand.getItem() == RusticRegenerated.CROSSED_LOG_ITEM.get()) {
             BlockPlaceContext context = new BlockPlaceContext(level, player, hand, itemInHand, result);
-            BlockState newState = RusticRegenerated.CROSSED_LOGS_BLOCK.get().getStateForPlacement(context);
+            BlockState newState = ModBlocks.CROSSED_LOGS_BLOCK.get().getStateForPlacement(context);
             if (newState == null) return InteractionResult.FAIL;
             
             newState = newState.setValue(CrossedLogsBlock.STAKE, true);

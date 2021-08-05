@@ -124,6 +124,7 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
     }
     
     public static class LeafCoveredModelData implements IModelData {
+        public static final ModelProperty<BlockState> leafBlock = new ModelProperty<>();
         public static final ModelProperty<LeafCoveredModelData> PROPERTY = new ModelProperty<>();
 
         public LeafCoveredModelData() {}

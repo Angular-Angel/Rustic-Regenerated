@@ -68,7 +68,7 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock, App
                     level.setBlock(pos, state.setValue(AGE, 1), 2);
                 } else {
                     if (!exportGrowth(state, level, pos, 1))
-                        level.setBlock(pos, RusticRegenerated.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
+                        level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
                 }
                 net.minecraftforge.common.ForgeHooks.onCropsGrowPost(level, pos, state);
             }
@@ -90,7 +90,7 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock, App
         if (state.getValue(AGE) == 0 && random.nextFloat() < 0.25) {
             level.setBlock(pos, state.setValue(AGE, 1), 2);
         } else {
-            level.setBlock(pos, RusticRegenerated.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
+            level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
         }
     }
     
