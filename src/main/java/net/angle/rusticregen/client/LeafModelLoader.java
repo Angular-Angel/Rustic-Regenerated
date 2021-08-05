@@ -15,6 +15,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import net.angle.rusticregen.client.LeafModelLoader.LeafCoveredGeometry;
+import net.angle.rusticregen.common.blocks.CrossedLogsBlock;
+import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -24,10 +26,13 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -119,13 +124,26 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         public ItemOverrides getOverrides() {
             return ItemOverrides.EMPTY;
         }
+
+        @Override
+        public IModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, IModelData tileData) {
+            if (state.getBlock() instanceof CrossedLogsBlock)
+                return new LeafCoveredModelData(((CrossedLogsEntity) world.getBlockEntity(pos)).getLeafState());
+            else
+                return tileData;
+        }
+        
+        
     }
     
     public static class LeafCoveredModelData implements IModelData {
-        public static final ModelProperty<BlockState> leafBlock = new ModelProperty<>();
         public static final ModelProperty<LeafCoveredModelData> PROPERTY = new ModelProperty<>();
 
-        public LeafCoveredModelData() {}
+        public final BlockState state;
+        
+        public LeafCoveredModelData(BlockState state) {
+            this.state = state;
+        }
 
         @Override
         public boolean hasProperty(ModelProperty<?> prop) {
@@ -145,6 +163,5 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         public <T> T setData(ModelProperty<T> prop, T data) {
             return data;
         }
-
     }
 }

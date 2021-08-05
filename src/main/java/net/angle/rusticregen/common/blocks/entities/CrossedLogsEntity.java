@@ -24,14 +24,19 @@ public class CrossedLogsEntity extends BlockEntity {
     public CrossedLogsEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(RusticRegenerated.CROSSED_LOGS_ENTITY_TYPE.get(), p_155229_, p_155230_);
     }
-    
-    public static class CrossedLogsRenderer implements BlockEntityRenderer<CrossedLogsEntity> {
 
-        @Override
-        public void render(CrossedLogsEntity entity, float partialTicks, PoseStack pose, MultiBufferSource source, int combinedLightIn, int p_112312_) {
-            
-        }
-    
+    /**
+     * @return the leafState
+     */
+    public BlockState getLeafState() {
+        return leafState;
+    }
+
+    /**
+     * @param leafState the leafState to set
+     */
+    public void setLeafState(BlockState leafState) {
+        this.leafState = leafState;
     }
     
 }
