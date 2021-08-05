@@ -18,6 +18,7 @@ import net.angle.rusticregen.client.LeafModelLoader.LeafCoveredGeometry;
 import net.angle.rusticregen.common.blocks.CrossedLogsBlock;
 import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -31,13 +32,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -81,18 +81,14 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
             if (state == null)
                 return Lists.newArrayList();
-            BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-            return getQuads(state, model, side, rand);
+            return getQuads(state, (LeafCoveredModelData) extraData, side, rand);
         }
-
-        public List<BakedQuad> getQuads(BlockState state, BakedModel model, Direction side, Random rand) {
-            Block block = state.getBlock();
-            if (state == null)
-                return Lists.newArrayList();
-    //        IModelData tileData = state.hasBlockEntity() ? Minecraft.getInstance().level.getBlockEntity().getModelData() : EmptyModelData.INSTANCE;
-    //        IModelData modelData = model.getModelData(block.getWorld(), block.getPos(), state, tileData);
-    //        return getQuadsForModel(model, state, side, rand, modelData, block.isPositive());
-            return Lists.newArrayList();
+        
+        public List<BakedQuad> getQuads(BlockState state, LeafCoveredModelData data, Direction side, Random rand) {
+            BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+            List<BakedQuad> quads = blockRenderer.getBlockModel(state).getQuads(state, side, rand, EmptyModelData.INSTANCE);
+            quads.addAll(blockRenderer.getBlockModel(state).getQuads(data.state, side, rand, EmptyModelData.INSTANCE));
+            return quads;
         }
 
         @Override
