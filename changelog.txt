@@ -1,4 +1,5 @@
-Build: 1.17.1-37.0.1 - Thu Jul 22 21:52:37 GMT 2021
-	lexmanos:
-		Bump SecureJarHandler to fix package meta issue. Closes #7881
-		Fix version.json having duplicate libraries.
+
+1.17.1-1.0.3-RELEASE:
+*Added numerous recipes for Crossed Logs and Stakes, including ones to turn both into sticks.
+*Added config option to set whether or not apples will grow on persistent leaves.
+*Adjust downfall parameters for some modded biomes.

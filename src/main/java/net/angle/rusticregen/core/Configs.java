@@ -55,6 +55,7 @@ public class Configs {
     public static class ServerConfig {
         public final ForgeConfigSpec.DoubleValue appleMaturationChance;
         public final ForgeConfigSpec.DoubleValue goldenAppleHarvestChance;
+        public final ForgeConfigSpec.BooleanValue applesGrowOnPersistentLeaves;
 
         ServerConfig(ForgeConfigSpec.Builder builder) {
 
@@ -63,6 +64,9 @@ public class Configs {
 
             goldenAppleHarvestChance = builder.comment("The chance of getting a golden apple from a mature apple leaf block when right clicking it.")
                 .defineInRange("goldenAppleHarvestChance", 0.001, 0, 1);
+            
+            applesGrowOnPersistentLeaves = builder.comment("If apples should grow on leaves that have been sheared and re-placed.")
+                .define("applesGrowOnPersistentLeaves", true);
         }
     }
 }

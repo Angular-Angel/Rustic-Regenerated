@@ -66,7 +66,8 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     }
     
     public boolean canGrow(BlockGetter getter, BlockPos pos, BlockState state) {
-            return state.getValue(AGE) < getMaxAge() && isAirAdjacent(getter, pos);
+            return state.getValue(AGE) < getMaxAge() && isAirAdjacent(getter, pos) && 
+                    (!state.getValue(PERSISTENT) || Configs.SERVER.applesGrowOnPersistentLeaves.get());
     }
     
     protected static float getGrowthChance() {
