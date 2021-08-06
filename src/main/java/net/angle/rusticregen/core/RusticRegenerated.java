@@ -85,7 +85,7 @@ public class RusticRegenerated {
     public static ArrayList<Item> leafItems = new ArrayList<>();
     
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger(MODID);
+    public static final Logger LOGGER = LogManager.getLogger(MODID);
     
     public static ConfiguredFeature<TreeConfiguration, ?> APPLE_TREE;
     public static ConfiguredFeature<TreeConfiguration, ?> APPLE_BEES_0002;

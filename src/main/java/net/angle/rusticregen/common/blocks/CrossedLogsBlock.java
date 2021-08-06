@@ -65,7 +65,7 @@ public class CrossedLogsBlock extends SlabBlock implements EntityBlock {
     public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState state, FluidState fluid) {
         if (!state.getValue(WATERLOGGED) && fluid.getType() == Fluids.WATER) {
             if (!level.isClientSide()) {
-                level.setBlock(pos, state.setValue(WATERLOGGED, true), 3);
+                level.setBlock(pos, state.setValue(WATERLOGGED, true), UPDATE_ALL);
                 level.getLiquidTicks().scheduleTick(pos, fluid.getType(), fluid.getType().getTickDelay(level));
             }
             return true;
@@ -108,13 +108,13 @@ public class CrossedLogsBlock extends SlabBlock implements EntityBlock {
         Item item = itemInHand.getItem();
         if (item == null) return InteractionResult.FAIL;
         if (!state.getValue(STAKE) && item == RusticRegenerated.STAKE_ITEM.get()) {
-            level.setBlock(pos, state.setValue(STAKE, true), 2);
+            level.setBlock(pos, state.setValue(STAKE, true), UPDATE_CLIENTS);
             if (!player.isCreative())
                 itemInHand.shrink(1);
             return InteractionResult.SUCCESS;
         } else if (!state.getValue(LEAVES) && isLeavesItem(item)) {
-            level.setBlock(pos, state.setValue(LEAVES, true), 2);
             getBlockEntity(level, pos).setLeafState(getLeavesFromItem(item).getStateForPlacement(new BlockPlaceContext(level, player, hand, itemInHand, result)));
+            level.setBlock(pos, state.setValue(LEAVES, true), UPDATE_ALL);
             if (!player.isCreative())
                 itemInHand.shrink(1);
             return InteractionResult.SUCCESS;

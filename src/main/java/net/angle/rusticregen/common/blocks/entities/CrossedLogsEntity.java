@@ -8,9 +8,14 @@ package net.angle.rusticregen.common.blocks.entities;
 import net.angle.rusticregen.client.LeafModelLoader;
 import net.angle.rusticregen.core.RusticRegenerated;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
+import net.minecraft.nbt.NbtUtils;
 
 /**
  *
@@ -43,6 +48,46 @@ public class CrossedLogsEntity extends BlockEntity {
         return new LeafModelLoader.LeafCoveredModelData(getLeafState());
     }
     
+    public CompoundTag writeTag(CompoundTag tag) {
+        tag.put("leaf_state", NbtUtils.writeBlockState(leafState));
+        return tag;
+    }
     
+    public void readTag(CompoundTag tag) {
+        leafState = NbtUtils.readBlockState(tag.getCompound("leaf_state"));
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag) {
+        return super.save(writeTag(tag)); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        readTag(tag);
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag updateTag = super.getUpdateTag();
+        return writeTag(updateTag);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        readTag(tag);
+    }
+
+    @Override
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(getBlockPos(), -1, getUpdateTag());
+    }
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        super.onDataPacket(net, pkt);
+        readTag(pkt.getTag());
+    }
     
 }
