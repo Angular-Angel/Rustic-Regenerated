@@ -102,10 +102,8 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if (state.getValue(AXIS) != Direction.Axis.Y)
-            return InteractionResult.FAIL;
         ItemStack itemInHand = player.getItemInHand(hand);
-        if (itemInHand.getItem() == RusticRegenerated.CROSSED_LOG_ITEM.get()) {
+        if (itemInHand.getItem() == RusticRegenerated.CROSSED_LOG_ITEM.get() && state.getValue(AXIS) == Direction.Axis.Y) {
             BlockPlaceContext context = new BlockPlaceContext(level, player, hand, itemInHand, result);
             BlockState newState = ModBlocks.CROSSED_LOGS_BLOCK.get().getStateForPlacement(context);
             if (newState == null) return InteractionResult.FAIL;
