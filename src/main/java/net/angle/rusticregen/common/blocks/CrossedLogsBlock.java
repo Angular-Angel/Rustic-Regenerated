@@ -93,6 +93,14 @@ public class CrossedLogsBlock extends SlabBlock implements EntityBlock {
     public boolean isLeavesItem(Item item) {
         return (item instanceof BlockItem) && ((BlockItem) item).getBlock() instanceof LeavesBlock;
     }
+    
+    public LeavesBlock getLeavesFromItem(Item item) {
+       return (LeavesBlock) ((BlockItem) item).getBlock();
+    }
+    
+    public CrossedLogsEntity getBlockEntity(Level level, BlockPos pos) {
+        return (CrossedLogsEntity) level.getBlockEntity(pos);
+    }
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
@@ -106,6 +114,7 @@ public class CrossedLogsBlock extends SlabBlock implements EntityBlock {
             return InteractionResult.SUCCESS;
         } else if (!state.getValue(LEAVES) && isLeavesItem(item)) {
             level.setBlock(pos, state.setValue(LEAVES, true), 2);
+            getBlockEntity(level, pos).setLeafState(getLeavesFromItem(item).getStateForPlacement(new BlockPlaceContext(level, player, hand, itemInHand, result)));
             if (!player.isCreative())
                 itemInHand.shrink(1);
             return InteractionResult.SUCCESS;

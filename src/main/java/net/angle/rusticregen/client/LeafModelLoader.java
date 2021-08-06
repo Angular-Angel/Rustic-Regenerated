@@ -5,6 +5,7 @@
  */
 package net.angle.rusticregen.client;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -18,9 +19,7 @@ import net.angle.rusticregen.client.LeafModelLoader.LeafCoveredGeometry;
 import net.angle.rusticregen.common.blocks.CrossedLogsBlock;
 import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -36,9 +35,9 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -47,6 +46,8 @@ import net.minecraftforge.client.model.geometry.IModelGeometry;
  * @author angle
  */
 public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
+    
+    public static LeafModelLoader INSTANCE = new LeafModelLoader();
 
     @Override
     public LeafCoveredGeometry read(JsonDeserializationContext deserializationContext, JsonObject modelContents) {
@@ -62,59 +63,68 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
 
         @Override
         public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            Material particleLocation = owner.resolveTexture("particle");
+            TextureAtlasSprite particle = spriteGetter.apply(particleLocation);
+            return new LeafCoveredBakedModel(owner.useSmoothLighting(), owner.isShadedInGui(), owner.isSideLit(), particle);
         }
 
         @Override
         public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            return Lists.newArrayList();
         }
         
     }
     
     public static class LeafCoveredBakedModel implements IDynamicBakedModel {
-
-        public static BakedModel getFallbackModel() {
-            return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getModelManager().getMissingModel();
+        
+        private final boolean useAmbientOcclusion;
+        private final boolean isGui3d;
+        private final boolean usesBlockLight;
+        private final TextureAtlasSprite particle;
+        
+        public LeafCoveredBakedModel(boolean useAmbientOcclusion, boolean isGui3d, boolean usesBlockLight, TextureAtlasSprite particle) {
+            this.useAmbientOcclusion = useAmbientOcclusion;
+            this.isGui3d = isGui3d;
+            this.usesBlockLight = usesBlockLight;
+            this.particle = particle;
         }
 
         @Override
         public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
-            if (state == null)
-                return Lists.newArrayList();
-            return getQuads(state, extraData.getData(LeafCoveredModelData.PROPERTY), side, rand);
-        }
-        
-        public List<BakedQuad> getQuads(BlockState state, LeafCoveredModelData data, Direction side, Random rand) {
-            BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-            List<BakedQuad> quads = blockRenderer.getBlockModel(state).getQuads(state, side, rand, EmptyModelData.INSTANCE);
-            quads.addAll(blockRenderer.getBlockModel(state).getQuads(data.state, side, rand, EmptyModelData.INSTANCE));
-            return quads;
+            LeafCoveredModelData data = extraData.getData(LeafCoveredModelData.PROPERTY);
+            
+            if (data == null)
+                return ImmutableList.of();
+            
+            if (data.state != null)
+                return Minecraft.getInstance().getBlockRenderer().getBlockModel(data.state).getQuads(data.state, side, rand, data);
+            else 
+                return ImmutableList.of();
         }
 
         @Override
         public boolean useAmbientOcclusion() {
-            return getFallbackModel().useAmbientOcclusion();
+            return useAmbientOcclusion;
         }
 
         @Override
         public boolean isGui3d() {
-            return getFallbackModel().isGui3d();
+            return isGui3d;
         }
 
         @Override
         public boolean usesBlockLight() {
-            return getFallbackModel().usesBlockLight();
+            return usesBlockLight;
         }
 
         @Override
         public boolean isCustomRenderer() {
-            return getFallbackModel().isCustomRenderer();
+            return false;
         }
 
         @Override
         public TextureAtlasSprite getParticleIcon() {
-            return getFallbackModel().getParticleIcon();
+            return particle;
         }
 
         @Override
@@ -124,8 +134,8 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
 
         @Override
         public IModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, IModelData tileData) {
-            if (state.getBlock() instanceof CrossedLogsBlock)
-                return new LeafCoveredModelData(((CrossedLogsEntity) world.getBlockEntity(pos)).getLeafState());
+            if (world.getBlockEntity(pos) instanceof CrossedLogsEntity blockEntity)
+                return new LeafCoveredModelData(blockEntity.getLeafState());
             else
                 return tileData;
         }
@@ -152,8 +162,10 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         public <T> T getData(ModelProperty<T> prop) {
             if (prop == PROPERTY)
                 return (T) this;
-            else
+            else {
+                System.out.println(prop);
                 return null;
+            }
         }
 
         @Override

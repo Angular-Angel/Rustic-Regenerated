@@ -1,5 +1,5 @@
 {
-    "parent": "block/block",
+    "parent": "minecraft:block/block",
     "loader": "rusticregen:leaf_covered",
     "transform": { "scale": [ 1.001, 1.001, 1.001 ] }
 }

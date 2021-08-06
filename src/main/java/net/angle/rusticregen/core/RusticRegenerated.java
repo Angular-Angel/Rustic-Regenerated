@@ -8,6 +8,7 @@ package net.angle.rusticregen.core;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.OptionalInt;
+import net.angle.rusticregen.client.LeafModelLoader;
 import net.angle.rusticregen.common.blocks.*;
 import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
 import net.angle.rusticregen.common.grower.GrandBirchTreeGrower;
@@ -21,6 +22,7 @@ import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.Features;
 import net.minecraft.data.worldgen.biome.VanillaBiomes;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.*;
 import net.minecraft.world.item.*;
@@ -48,6 +50,7 @@ import net.minecraft.world.level.levelgen.placement.FrequencyWithExtraChanceDeco
 import net.minecraft.world.level.levelgen.placement.WaterDepthThresholdConfiguration;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -427,7 +430,7 @@ public class RusticRegenerated {
         
         @SubscribeEvent
         public static void onRegisterModelLoaders(ModelRegistryEvent event) {
-            //ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "leaf_models"), );
+            ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "leaf_covered"), LeafModelLoader.INSTANCE);
         }
         
     }

@@ -5,13 +5,12 @@
  */
 package net.angle.rusticregen.common.blocks.entities;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.angle.rusticregen.client.LeafModelLoader;
 import net.angle.rusticregen.core.RusticRegenerated;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.IModelData;
 
 /**
  *
@@ -38,5 +37,12 @@ public class CrossedLogsEntity extends BlockEntity {
     public void setLeafState(BlockState leafState) {
         this.leafState = leafState;
     }
+
+    @Override
+    public IModelData getModelData() {
+        return new LeafModelLoader.LeafCoveredModelData(getLeafState());
+    }
+    
+    
     
 }
