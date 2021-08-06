@@ -37,7 +37,7 @@ import net.minecraft.world.phys.BlockHitResult;
  *
  * @author angle
  */
-public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedBlock {
+public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedBlock, LeafCoveredEntityBlock {
    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
    
     protected static final VoxelShape STAKE_AABB_X = Block.box(0.0D, 6.0D, 6.0F, 16.0D, 10.0D, 10.0D);
@@ -46,13 +46,13 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
     
     public StakeBlock() {
         super(Properties.copy(ModBlocks.CROSSED_LOGS_BLOCK.get()));
-        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
+        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false).setValue(LEAVES, false));
     }
     
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(WATERLOGGED);
+        builder.add(WATERLOGGED, LEAVES);
     }
     
     @Override
@@ -120,6 +120,9 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
             level.setBlock(pos, newState, 2);
             if (!player.isCreative())
                 itemInHand.shrink(1);
+            return InteractionResult.SUCCESS;
+        } else if (canAcceptLeavesFromItem(state, itemInHand.getItem())) {
+            setLeaves(state, level, pos, itemInHand, player, hand, result);
             return InteractionResult.SUCCESS;
         } else
             return InteractionResult.FAIL;

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.OptionalInt;
 import net.angle.rusticregen.client.LeafModelLoader;
 import net.angle.rusticregen.common.blocks.*;
-import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
+import net.angle.rusticregen.common.blocks.entities.LeafCoveredEntity;
 import net.angle.rusticregen.common.grower.GrandBirchTreeGrower;
 import net.angle.rusticregen.common.grower.GreatOakTreeGrower;
 import net.angle.rusticregen.common.grower.NormalAppleTreeGrower;
@@ -123,8 +123,8 @@ public class RusticRegenerated {
     
     private static final DeferredRegister<Biome> BIOMES = DeferredRegister.create(ForgeRegistries.BIOMES, MODID);
     
-    public static final RegistryObject<BlockEntityType<CrossedLogsEntity>> CROSSED_LOGS_ENTITY_TYPE = 
-            BLOCK_ENTITIES.register("crossed_logs", () -> BlockEntityType.Builder.of(CrossedLogsEntity::new, ModBlocks.CROSSED_LOGS_BLOCK.get()).build(null));
+    public static final RegistryObject<BlockEntityType<LeafCoveredEntity>> CROSSED_LOGS_ENTITY_TYPE = 
+            BLOCK_ENTITIES.register("crossed_logs", () -> BlockEntityType.Builder.of(LeafCoveredEntity::new, ModBlocks.CROSSED_LOGS_BLOCK.get()).build(null));
     
     public static final RegistryObject<Item> APPLE_LEAVES_ITEM = ITEMS.register("apple_leaves", () -> {
         return registerLeafItem(new BlockItem(ModBlocks.APPLE_LEAVES_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
@@ -426,17 +426,17 @@ public class RusticRegenerated {
             
             event.getBlockColors().register((state, world, pos, tintIndex) -> {
                 try {
-                    BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-                    BlockState leafState = ((CrossedLogsBlock) state.getBlock()).getBlockEntity(world, pos).getLeafState();
-                    return blockColors.getColor(leafState, world, pos, tintIndex);
+                    BlockState leafState = ((LeafCoveredEntityBlock) state.getBlock()).getBlockEntity(world, pos).getLeafState();
+                    return Minecraft.getInstance().getBlockColors().getColor(leafState, world, pos, tintIndex);
                 } catch (Exception e) {
                     return -1; //No tint!
-                }}, ModBlocks.CROSSED_LOGS_BLOCK.get());
+                }}, ModBlocks.CROSSED_LOGS_BLOCK.get(), ModBlocks.STAKE_BLOCK.get());
         }
         
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.CROSSED_LOGS_BLOCK.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.STAKE_BLOCK.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SAPLING_BLOCK.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SEEDS_BLOCK.get(), RenderType.cutout());
         }
