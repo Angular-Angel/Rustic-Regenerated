@@ -9,6 +9,8 @@ import static net.angle.rusticregen.common.blocks.AppleSeedsBlock.AGE;
 import net.angle.rusticregen.core.RusticRegenerated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import static net.minecraft.world.level.block.Block.UPDATE_ALL;
+import static net.minecraft.world.level.block.Block.UPDATE_CLIENTS;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -33,10 +35,10 @@ public interface AppleGrowthExporter {
     public default boolean exportGrowthTo(BlockState state, ServerLevel level, BlockPos pos, int limit) {
         BlockState block = level.getBlockState(pos);
         if (isImmatureSeeds(block)) {
-            level.setBlock(pos, block.setValue(AGE, 1), 2);
+            level.setBlock(pos, block.setValue(AGE, 1), UPDATE_CLIENTS);
             return true;
         } else if (limit > 1 && isMatureSeeds(block)) {
-            level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
+            level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), UPDATE_ALL);
             return true;
         } else
             return false;

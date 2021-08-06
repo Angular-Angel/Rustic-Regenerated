@@ -14,6 +14,8 @@ import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
 import net.angle.rusticregen.common.grower.GrandBirchTreeGrower;
 import net.angle.rusticregen.common.grower.GreatOakTreeGrower;
 import net.angle.rusticregen.common.grower.NormalAppleTreeGrower;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -66,6 +68,7 @@ import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -420,10 +423,20 @@ public class RusticRegenerated {
                     world != null && pos != null
                             ? BiomeColors.getAverageFoliageColor(world, pos)
                             : FoliageColor.getDefaultColor(), leafBlocks.toArray(new Block[]{}));
+            
+            event.getBlockColors().register((state, world, pos, tintIndex) -> {
+                try {
+                    BlockColors blockColors = Minecraft.getInstance().getBlockColors();
+                    BlockState leafState = ((CrossedLogsBlock) state.getBlock()).getBlockEntity(world, pos).getLeafState();
+                    return blockColors.getColor(leafState, world, pos, tintIndex);
+                } catch (Exception e) {
+                    return -1; //No tint!
+                }}, ModBlocks.CROSSED_LOGS_BLOCK.get());
         }
         
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CROSSED_LOGS_BLOCK.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SAPLING_BLOCK.get(), RenderType.cutout());
             ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SEEDS_BLOCK.get(), RenderType.cutout());
         }

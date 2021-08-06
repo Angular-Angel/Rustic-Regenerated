@@ -89,7 +89,7 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
             if (ForgeHooks.onCropsGrowPre(level, pos, state,
                         rand.nextFloat() <= getGrowthChance())) {
                 
-                level.setBlock(pos, state.setValue(AGE, (state.getValue(AGE) + 1)), 2);
+                level.setBlock(pos, state.setValue(AGE, (state.getValue(AGE) + 1)), UPDATE_CLIENTS);
                 net.minecraftforge.common.ForgeHooks.onCropsGrowPost(level, pos, state);
             }
         }

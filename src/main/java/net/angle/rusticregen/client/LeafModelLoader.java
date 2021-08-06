@@ -10,32 +10,33 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Transformation;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 import net.angle.rusticregen.client.LeafModelLoader.LeafCoveredGeometry;
-import net.angle.rusticregen.common.blocks.CrossedLogsBlock;
-import net.angle.rusticregen.common.blocks.entities.CrossedLogsEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.QuadTransformer;
 import net.minecraftforge.client.model.data.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -93,12 +94,16 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
             LeafCoveredModelData data = extraData.getData(LeafCoveredModelData.PROPERTY);
             
-            if (data == null)
+            if (data == null) {
                 return ImmutableList.of();
+            }
             
-            if (data.state != null)
-                return Minecraft.getInstance().getBlockRenderer().getBlockModel(data.state).getQuads(data.state, side, rand, data);
-            else 
+            if (data.state != null) {
+                Matrix4f matrix = Matrix4f.createScaleMatrix(1.001f, 1.001f, 1.001f);
+                matrix.add(Matrix4f.createTranslateMatrix(-0.0005f, -0.0005f, -0.0005f));
+                QuadTransformer transformer = new QuadTransformer(new Transformation(matrix));
+                return transformer.processMany(Minecraft.getInstance().getBlockRenderer().getBlockModel(data.state).getQuads(data.state, side, rand, data));
+            } else 
                 return ImmutableList.of();
         }
 
@@ -131,15 +136,6 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         public ItemOverrides getOverrides() {
             return ItemOverrides.EMPTY;
         }
-
-        @Override
-        public IModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, IModelData tileData) {
-            if (world.getBlockEntity(pos) instanceof CrossedLogsEntity blockEntity)
-                return new LeafCoveredModelData(blockEntity.getLeafState());
-            else
-                return tileData;
-        }
-        
         
     }
     
@@ -163,14 +159,13 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
             if (prop == PROPERTY)
                 return (T) this;
             else {
-                System.out.println(prop);
                 return null;
             }
         }
 
         @Override
-        public <T> T setData(ModelProperty<T> prop, T data) {
-            return data;
+        public <T> T setData(ModelProperty<T> mp, T t) {
+            throw new UnsupportedOperationException("Not supported.");
         }
     }
 }

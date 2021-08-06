@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
@@ -41,6 +40,7 @@ public class CrossedLogsEntity extends BlockEntity {
      */
     public void setLeafState(BlockState leafState) {
         this.leafState = leafState;
+        requestModelDataUpdate();
     }
 
     @Override
@@ -49,12 +49,12 @@ public class CrossedLogsEntity extends BlockEntity {
     }
     
     public CompoundTag writeTag(CompoundTag tag) {
-        tag.put("leaf_state", NbtUtils.writeBlockState(leafState));
+        if (leafState != null) tag.put("leaf_state", NbtUtils.writeBlockState(leafState));
         return tag;
     }
     
     public void readTag(CompoundTag tag) {
-        leafState = NbtUtils.readBlockState(tag.getCompound("leaf_state"));
+        setLeafState(NbtUtils.readBlockState(tag.getCompound("leaf_state")));
     }
 
     @Override

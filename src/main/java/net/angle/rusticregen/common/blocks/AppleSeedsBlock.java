@@ -54,22 +54,25 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock, App
     protected static float getGrowthChance() {
         return 0.15f;
     }
+    
+    public void grow(BlockState state, ServerLevel level, BlockPos pos) {
+        if (state.getValue(AGE) < this.getMaxAge()) {
+            level.setBlock(pos, state.setValue(AGE, 1), UPDATE_CLIENTS);
+        } else {
+            if (!exportGrowth(state, level, pos, 1))
+                level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), UPDATE_ALL);
+        }
+    }
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random rand) {
         super.randomTick(state, level, pos, rand);
         
         if (level.getMaxLocalRawBrightness(pos.above()) >= 9) {
-            int i = state.getValue(AGE);
             //Not actually sure if I should be directly calling forge hooks here, 
             //but this is copied more or less verbatim from rustic for 1.12, and I don't know how else to do it.
             if (ForgeHooks.onCropsGrowPre(level, pos, state, rand.nextFloat() <= getGrowthChance())) {
-                if (i < this.getMaxAge()) {
-                    level.setBlock(pos, state.setValue(AGE, 1), 2);
-                } else {
-                    if (!exportGrowth(state, level, pos, 1))
-                        level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
-                }
+                grow(state, level, pos);
                 net.minecraftforge.common.ForgeHooks.onCropsGrowPost(level, pos, state);
             }
         }
@@ -87,11 +90,7 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock, App
 
     @Override
     public void performBonemeal(ServerLevel level, Random random, BlockPos pos, BlockState state) {
-        if (state.getValue(AGE) == 0 && random.nextFloat() < 0.25) {
-            level.setBlock(pos, state.setValue(AGE, 1), 2);
-        } else {
-            level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), 3);
-        }
+        grow(state, level, pos);
     }
     
 }
