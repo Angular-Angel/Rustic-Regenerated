@@ -5,6 +5,7 @@
  */
 package net.angle.rusticregen.common.blocks;
 
+import static net.angle.rusticregen.common.blocks.LeafCoveredEntityBlock.LEAVES;
 import net.angle.rusticregen.core.RusticRegenerated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,6 +33,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.Shapes;
 
 /**
  *
@@ -57,16 +59,19 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
     
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        switch(state.getValue(AXIS)) { 
-            case X:
-                return STAKE_AABB_X; 
-            case Y:
-                return STAKE_AABB_Y; 
-            case Z:
-                return STAKE_AABB_Z;
-            default:
-                return STAKE_AABB_Y;
-        }
+        if (state.getValue(LEAVES))
+            return Shapes.block();
+        else
+            switch(state.getValue(AXIS)) { 
+                case X:
+                    return STAKE_AABB_X; 
+                case Y:
+                    return STAKE_AABB_Y; 
+                case Z:
+                    return STAKE_AABB_Z;
+                default:
+                    return STAKE_AABB_Y;
+            }
     }
 
     @Override
@@ -119,10 +124,7 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
             if (!player.isCreative())
                 itemInHand.shrink(1);
             return InteractionResult.SUCCESS;
-        } else if (canAcceptLeavesFromItem(state, itemInHand.getItem())) {
-            setLeaves(state, level, pos, itemInHand, player, hand, result);
-            return InteractionResult.SUCCESS;
-        } else
-            return InteractionResult.FAIL;
+        } else 
+            return LeafCoveredEntityBlock.super.use(state, level, pos, itemInHand, player, hand, result);
     }
 }

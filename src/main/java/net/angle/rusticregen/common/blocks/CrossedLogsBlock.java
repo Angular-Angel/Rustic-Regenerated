@@ -30,6 +30,9 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ToolType;
 
 /**
@@ -43,6 +46,14 @@ public class CrossedLogsBlock extends SlabBlock implements LeafCoveredEntityBloc
     public CrossedLogsBlock() {
         super(Properties.of(Material.WOOD).noOcclusion().strength(2).harvestTool(ToolType.AXE));
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(STAKE, false).setValue(LEAVES, false));
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+        if (state.getValue(LEAVES))
+            return Shapes.block();
+        else 
+            return super.getShape(state, getter, pos, context); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override
@@ -87,10 +98,7 @@ public class CrossedLogsBlock extends SlabBlock implements LeafCoveredEntityBloc
             if (!player.isCreative())
                 itemInHand.shrink(1);
             return InteractionResult.SUCCESS;
-        } else if (canAcceptLeavesFromItem(state, itemInHand.getItem())) {
-            setLeaves(state, level, pos, itemInHand, player, hand, result);
-            return InteractionResult.SUCCESS;
         } else
-            return InteractionResult.FAIL;
+            return LeafCoveredEntityBlock.super.use(state, level, pos, itemInHand, player, hand, result);
     }
 }

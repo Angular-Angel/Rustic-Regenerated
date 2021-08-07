@@ -94,16 +94,6 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
             }
         }
     }
-    
-    @Override
-    public boolean isShearable(@Nonnull ItemStack item, Level world, BlockPos pos) {
-        return true;
-    }
-    
-    @Override
-    public List<ItemStack> onSheared(@Nullable Player player, @Nonnull ItemStack item, Level world, BlockPos pos, int fortune) {
-        return NonNullList.withSize(1, new ItemStack(asItem()));
-    }
 
     @Override
     public boolean isValidBonemealTarget(BlockGetter getter, BlockPos pos, BlockState state, boolean isClient) {
@@ -139,10 +129,10 @@ public class AppleLeavesBlock extends LeavesBlock implements BonemealableBlock {
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         if (state.getValue(AGE) < this.getMaxAge())
             return InteractionResult.FAIL;
-        
-        dropApple(level, pos, state);
-        
-        level.setBlock(pos, state.setValue(AGE, 0), 2);
-        return InteractionResult.SUCCESS;
+        else {
+            dropApple(level, pos, state);
+            level.setBlock(pos, state.setValue(AGE, 0), 2);
+            return InteractionResult.SUCCESS;
+        }
     }
 }
