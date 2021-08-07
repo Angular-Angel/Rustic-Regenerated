@@ -1,3 +1,5 @@
+1.17.1-1.1.1-RELEASE:
+*Can now use shears to remove leaves from leaf covered blocks.
 
 1.17.1-1.1.0-BETA:
 *Allow covering stakes and crossed logs with leaves, any leaves.
