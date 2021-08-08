@@ -6,6 +6,7 @@
 package net.angle.rusticregen.common.blocks;
 
 import static net.angle.rusticregen.common.blocks.LeafCoveredEntityBlock.LEAVES;
+import net.angle.rusticregen.common.items.ModItems;
 import net.angle.rusticregen.core.RusticRegenerated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -108,7 +109,7 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         ItemStack itemInHand = player.getItemInHand(hand);
-        if (itemInHand.getItem() == RusticRegenerated.CROSSED_LOG_ITEM.get() && state.getValue(AXIS) == Direction.Axis.Y) {
+        if (itemInHand.getItem() == ModItems.CROSSED_LOG_ITEM.get() && state.getValue(AXIS) == Direction.Axis.Y) {
             BlockPlaceContext context = new BlockPlaceContext(level, player, hand, itemInHand, result);
             BlockState newState = ModBlocks.CROSSED_LOGS_BLOCK.get().getStateForPlacement(context);
             if (newState == null) return InteractionResult.FAIL;

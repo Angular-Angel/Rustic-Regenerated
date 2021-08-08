@@ -6,7 +6,7 @@
 package net.angle.rusticregen.common.grower;
 
 import java.util.Random;
-import net.angle.rusticregen.core.RusticRegenerated;
+import net.angle.rusticregen.common.biomes.ModFeatures;
 import net.minecraft.data.worldgen.Features;
 import net.minecraft.world.level.block.grower.AbstractMegaTreeGrower;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -20,7 +20,7 @@ public class GreatOakTreeGrower extends AbstractMegaTreeGrower {
 
     @Override
     protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredMegaFeature(Random random) {
-        return RusticRegenerated.GREAT_OAK;
+        return ModFeatures.GREAT_OAK;
     }
 
     @Override

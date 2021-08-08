@@ -5,6 +5,7 @@
  */
 package net.angle.rusticregen.common.blocks;
 
+import net.angle.rusticregen.common.items.ModItems;
 import net.angle.rusticregen.core.RusticRegenerated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -93,7 +94,7 @@ public class CrossedLogsBlock extends SlabBlock implements LeafCoveredEntityBloc
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         ItemStack itemInHand = player.getItemInHand(hand);
-        if (!state.getValue(STAKE) && itemInHand.getItem() == RusticRegenerated.STAKE_ITEM.get()) {
+        if (!state.getValue(STAKE) && itemInHand.getItem() == ModItems.STAKE_ITEM.get()) {
             level.setBlock(pos, state.setValue(STAKE, true), UPDATE_CLIENTS);
             if (!player.isCreative())
                 itemInHand.shrink(1);

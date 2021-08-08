@@ -6,7 +6,7 @@
 package net.angle.rusticregen.common.grower;
 
 import java.util.Random;
-import net.angle.rusticregen.core.RusticRegenerated;
+import net.angle.rusticregen.common.biomes.ModFeatures;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
@@ -21,9 +21,9 @@ public class NormalAppleTreeGrower extends AbstractTreeGrower {
     protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredFeature(Random random, boolean bees) {
         switch(random.nextInt(10)) {
             case 0:
-                return bees ? RusticRegenerated.FANCY_APPLE_BEES_005 : RusticRegenerated.FANCY_APPLE_TREE;
+                return bees ? ModFeatures.FANCY_APPLE_BEES_005 : ModFeatures.FANCY_APPLE_TREE;
             default:
-                return bees ? RusticRegenerated.APPLE_BEES_005 : RusticRegenerated.APPLE_TREE;
+                return bees ? ModFeatures.APPLE_BEES_005 : ModFeatures.APPLE_TREE;
         }
     }
     

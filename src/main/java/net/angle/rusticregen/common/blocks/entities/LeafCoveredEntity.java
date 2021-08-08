@@ -6,7 +6,7 @@
 package net.angle.rusticregen.common.blocks.entities;
 
 import net.angle.rusticregen.client.LeafModelLoader;
-import net.angle.rusticregen.core.RusticRegenerated;
+import net.angle.rusticregen.common.blocks.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -25,7 +25,7 @@ public class LeafCoveredEntity extends BlockEntity {
     private BlockState leafState = null;
     
     public LeafCoveredEntity(BlockPos p_155229_, BlockState p_155230_) {
-        super(RusticRegenerated.CROSSED_LOGS_ENTITY_TYPE.get(), p_155229_, p_155230_);
+        super(ModBlocks.CROSSED_LOGS_ENTITY_TYPE.get(), p_155229_, p_155230_);
     }
 
     /**
