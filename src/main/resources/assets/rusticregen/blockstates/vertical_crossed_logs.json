@@ -1,0 +1,47 @@
+{
+    "multipart": [
+        {
+            "when": { "type": "front|double", "facing": "north" },
+            "apply": {"model": "rusticregen:block/crossed_logs", "x": 90, "y": 180}
+        },
+        {
+            "when": { "type": "front|double", "facing": "east" },
+            "apply": {"model": "rusticregen:block/crossed_logs", "x": 90, "y": 270}
+        },
+        {
+            "when": { "type": "front|double", "facing": "south" },
+            "apply": {"model": "rusticregen:block/crossed_logs", "x": 90, "y": 0}
+        },
+        {
+            "when": { "type": "front|double", "facing": "west" },
+            "apply": {"model": "rusticregen:block/crossed_logs", "x": 90, "y": 90}
+        },{
+            "when": { "type": "back|double", "facing": "north" },
+            "apply": {"model": "rusticregen:block/crossed_logs", "x": 270, "y": 180}
+        },
+        {
+            "when": { "type": "back|double", "facing": "east" },
+            "apply": {"model": "rusticregen:block/crossed_logs", "x": 270, "y": 270}
+        },
+        {
+            "when": { "type": "back|double", "facing": "south" },
+            "apply": {"model": "rusticregen:block/crossed_logs", "x": 270, "y": 0}
+        },
+        {
+            "when": { "type": "back|double", "facing": "west" },
+            "apply": {"model": "rusticregen:block/crossed_logs", "x": 270, "y": 90}
+        },
+        {
+            "when": { "stake": "true", "facing": "east|west" },
+            "apply": {"model": "rusticregen:block/stake", "x": 90, "y": 90}
+        },
+        {
+            "when": { "stake": "true", "facing": "north|south" },
+            "apply": {"model": "rusticregen:block/stake", "x": 90, "y": 0}
+        },
+        {
+            "when": { "leaves": "true" },
+            "apply": {"model": "rusticregen:block/leaf_covering"}
+        }
+    ]
+}

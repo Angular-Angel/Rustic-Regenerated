@@ -21,11 +21,11 @@ public interface AppleGrowthExporter {
     
     
     public default boolean isImmatureSeeds(BlockState state) {
-        return state.is(ModBlocks.APPLE_SEEDS_BLOCK.get()) && state.getValue(AGE) == 0;
+        return state.is(ModBlocks.APPLE_SEEDS.get()) && state.getValue(AGE) == 0;
     }
     
     public default boolean isMatureSeeds(BlockState state) {
-        return state.is(ModBlocks.APPLE_SEEDS_BLOCK.get()) && state.getValue(AGE) == 1;
+        return state.is(ModBlocks.APPLE_SEEDS.get()) && state.getValue(AGE) == 1;
     }
     
     public default boolean exportGrowthTo(BlockState state, ServerLevel level, BlockPos pos) {
@@ -38,7 +38,7 @@ public interface AppleGrowthExporter {
             level.setBlock(pos, block.setValue(AGE, 1), UPDATE_CLIENTS);
             return true;
         } else if (limit > 1 && isMatureSeeds(block)) {
-            level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), UPDATE_ALL);
+            level.setBlock(pos, ModBlocks.APPLE_SAPLING.get().defaultBlockState(), UPDATE_ALL);
             return true;
         } else
             return false;

@@ -48,6 +48,23 @@ public class CrossedLogsBlock extends SlabBlock implements LeafCoveredEntityBloc
         super(Properties.of(Material.WOOD).noOcclusion().strength(2).harvestTool(ToolType.AXE));
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(STAKE, false).setValue(LEAVES, false));
     }
+    
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(FACING, STAKE, LEAVES);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState state = super.getStateForPlacement(context);
+        if (state == null) return state;
+        if (state.getValue(TYPE) != SlabType.DOUBLE)
+            state = state.setValue(FACING, context.getHorizontalDirection());
+        if (context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER)
+            state = state.setValue(WATERLOGGED, true);
+        return state;
+    }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
@@ -75,26 +92,9 @@ public class CrossedLogsBlock extends SlabBlock implements LeafCoveredEntityBloc
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState state = super.getStateForPlacement(context);
-        if (state == null) return state;
-        if (state.getValue(TYPE) != SlabType.DOUBLE)
-            state = state.setValue(FACING, context.getHorizontalDirection());
-        if (context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER)
-            state = state.setValue(WATERLOGGED, true);
-        return state;
-    }
-    
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(FACING, STAKE, LEAVES);
-    }
-
-    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         ItemStack itemInHand = player.getItemInHand(hand);
-        if (!state.getValue(STAKE) && itemInHand.getItem() == ModItems.STAKE_ITEM.get()) {
+        if (!state.getValue(STAKE) && itemInHand.getItem() == ModItems.STAKE.get()) {
             level.setBlock(pos, state.setValue(STAKE, true), UPDATE_CLIENTS);
             if (!player.isCreative())
                 itemInHand.shrink(1);

@@ -93,7 +93,7 @@ public class RusticRegenerated {
             ((SaplingBlock) Blocks.OAK_SAPLING).treeGrower = new GreatOakTreeGrower();
             ((SaplingBlock) Blocks.BIRCH_SAPLING).treeGrower = new GrandBirchTreeGrower();
         } else
-            ((SaplingBlock) ModBlocks.APPLE_SAPLING_BLOCK.get()).treeGrower = new NormalAppleTreeGrower();
+            ((SaplingBlock) ModBlocks.APPLE_SAPLING.get()).treeGrower = new NormalAppleTreeGrower();
         
         ModFeatures.setupFeatures();
         
@@ -147,15 +147,16 @@ public class RusticRegenerated {
                     return Minecraft.getInstance().getBlockColors().getColor(leafState, world, pos, tintIndex);
                 } catch (Exception e) {
                     return -1; //No tint!
-                }}, ModBlocks.CROSSED_LOGS_BLOCK.get(), ModBlocks.STAKE_BLOCK.get());
+                }}, ModBlocks.CROSSED_LOGS.get(), ModBlocks.VERTICAL_CROSSED_LOGS.get(), ModBlocks.STAKE.get());
         }
         
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CROSSED_LOGS_BLOCK.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.STAKE_BLOCK.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SAPLING_BLOCK.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SEEDS_BLOCK.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CROSSED_LOGS.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.VERTICAL_CROSSED_LOGS.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.STAKE.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SAPLING.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SEEDS.get(), RenderType.cutout());
         }
         
         @SubscribeEvent

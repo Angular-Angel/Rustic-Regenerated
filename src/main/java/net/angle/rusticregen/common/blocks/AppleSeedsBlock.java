@@ -60,7 +60,7 @@ public class AppleSeedsBlock extends BushBlock implements BonemealableBlock, App
             level.setBlock(pos, state.setValue(AGE, 1), UPDATE_CLIENTS);
         } else {
             if (!exportGrowth(state, level, pos, 1))
-                level.setBlock(pos, ModBlocks.APPLE_SAPLING_BLOCK.get().defaultBlockState(), UPDATE_ALL);
+                level.setBlock(pos, ModBlocks.APPLE_SAPLING.get().defaultBlockState(), UPDATE_ALL);
         }
     }
 

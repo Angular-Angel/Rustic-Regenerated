@@ -23,19 +23,21 @@ public class ModBlocks {
     
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
 
-    public static final RegistryObject<Block> APPLE_LEAVES_BLOCK = BLOCKS.register("apple_leaves", () -> RusticRegenerated.registerLeafBlock(new AppleLeavesBlock()));
+    public static final RegistryObject<Block> APPLE_LEAVES = BLOCKS.register("apple_leaves", () -> RusticRegenerated.registerLeafBlock(new AppleLeavesBlock()));
     
-    public static final RegistryObject<Block> APPLE_SAPLING_BLOCK = BLOCKS.register("apple_sapling", () -> new AppleSaplingBlock());
+    public static final RegistryObject<Block> APPLE_SAPLING = BLOCKS.register("apple_sapling", () -> new AppleSaplingBlock());
 
-    public static final RegistryObject<Block> APPLE_SEEDS_BLOCK = BLOCKS.register("apple_seeds", () -> new AppleSeedsBlock());
+    public static final RegistryObject<Block> APPLE_SEEDS = BLOCKS.register("apple_seeds", () -> new AppleSeedsBlock());
     
-    public static final RegistryObject<Block> CROSSED_LOGS_BLOCK = BLOCKS.register("crossed_logs", () -> new CrossedLogsBlock());
+    public static final RegistryObject<Block> CROSSED_LOGS = BLOCKS.register("crossed_logs", () -> new CrossedLogsBlock());
     
-    public static final RegistryObject<Block> STAKE_BLOCK = BLOCKS.register("stake", () -> new StakeBlock());
+    public static final RegistryObject<Block> VERTICAL_CROSSED_LOGS = BLOCKS.register("vertical_crossed_logs", () -> new VerticalCrossedLogsBlock());
+    
+    public static final RegistryObject<Block> STAKE = BLOCKS.register("stake", () -> new StakeBlock());
     
     
     public static final RegistryObject<BlockEntityType<LeafCoveredEntity>> CROSSED_LOGS_ENTITY_TYPE = 
-            BLOCK_ENTITIES.register("crossed_logs", () -> BlockEntityType.Builder.of(LeafCoveredEntity::new, ModBlocks.CROSSED_LOGS_BLOCK.get()).build(null));
+            BLOCK_ENTITIES.register("crossed_logs", () -> BlockEntityType.Builder.of(LeafCoveredEntity::new, ModBlocks.CROSSED_LOGS.get()).build(null));
     
     
 }

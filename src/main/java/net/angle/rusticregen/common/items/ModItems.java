@@ -23,23 +23,27 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     
-    public static final RegistryObject<Item> APPLE_LEAVES_ITEM = ITEMS.register("apple_leaves", () -> {
-        return RusticRegenerated.registerLeafItem(new BlockItem(ModBlocks.APPLE_LEAVES_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
+    public static final RegistryObject<Item> APPLE_LEAVES = ITEMS.register("apple_leaves", () -> {
+        return RusticRegenerated.registerLeafItem(new BlockItem(ModBlocks.APPLE_LEAVES.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
     });
     
-    public static final RegistryObject<Item> APPLE_SAPLING_ITEM = ITEMS.register("apple_sapling", () -> {
-        return new BlockItem(ModBlocks.APPLE_SAPLING_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+    public static final RegistryObject<Item> APPLE_SAPLING = ITEMS.register("apple_sapling", () -> {
+        return new BlockItem(ModBlocks.APPLE_SAPLING.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
     });
     
-    public static final RegistryObject<Item> APPLE_SEEDS_ITEM = ITEMS.register("apple_seeds", () -> {
-        return new ItemNameBlockItem(ModBlocks.APPLE_SEEDS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
+    public static final RegistryObject<Item> APPLE_SEEDS = ITEMS.register("apple_seeds", () -> {
+        return new ItemNameBlockItem(ModBlocks.APPLE_SEEDS.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS));
     });
     
-    public static final RegistryObject<Item> CROSSED_LOG_ITEM = ITEMS.register("crossed_logs", () -> {
-        return new BlockItem(ModBlocks.CROSSED_LOGS_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
+    public static final RegistryObject<Item> CROSSED_LOGS = ITEMS.register("crossed_logs", () -> {
+        return new BlockItem(ModBlocks.CROSSED_LOGS.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
     });
     
-    public static final RegistryObject<Item> STAKE_ITEM = ITEMS.register("stake", () -> {
-        return new BlockItem(ModBlocks.STAKE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
+    public static final RegistryObject<Item> VERTICAL_CROSSED_LOGS = ITEMS.register("vertical_crossed_logs", () -> {
+        return new BlockItem(ModBlocks.VERTICAL_CROSSED_LOGS.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
+    });
+    
+    public static final RegistryObject<Item> STAKE = ITEMS.register("stake", () -> {
+        return new BlockItem(ModBlocks.STAKE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
     });
 }
