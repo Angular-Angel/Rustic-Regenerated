@@ -6,6 +6,7 @@
 package net.angle.rusticregen.common.items;
 
 import net.angle.rusticregen.common.blocks.ModBlocks;
+import net.angle.rusticregen.core.FuelHandler;
 import net.angle.rusticregen.core.RusticRegenerated;
 import static net.angle.rusticregen.core.RusticRegenerated.MODID;
 import net.minecraft.world.item.BlockItem;
@@ -46,4 +47,11 @@ public class ModItems {
     public static final RegistryObject<Item> STAKE = ITEMS.register("stake", () -> {
         return new BlockItem(ModBlocks.STAKE.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS));
     });
+    
+    public static void setup() {
+        FuelHandler.addFuel(APPLE_SAPLING.get(), 100);
+        FuelHandler.addFuel(CROSSED_LOGS.get(), 400);
+        FuelHandler.addFuel(VERTICAL_CROSSED_LOGS.get(), 400);
+        FuelHandler.addFuel(STAKE.get(), 400);
+    }
 }

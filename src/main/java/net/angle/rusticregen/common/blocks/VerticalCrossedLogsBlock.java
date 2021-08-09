@@ -17,25 +17,17 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.material.*;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.*;
 
 /**
  *
@@ -52,17 +44,23 @@ public class VerticalCrossedLogsBlock extends Block implements SimpleWaterlogged
     protected static final VoxelShape SOUTH_AABB = getAABB(Direction.SOUTH);
     protected static final VoxelShape WEST_AABB = getAABB(Direction.WEST);
     
+    public static final VoxelShape NORTH_STAKE = Shapes.or(NORTH_AABB, StakeBlock.STAKE_AABB_Z);
+    public static final VoxelShape EAST_STAKE = Shapes.or(EAST_AABB, StakeBlock.STAKE_AABB_X);
+    public static final VoxelShape SOUTH_STAKE = Shapes.or(SOUTH_AABB, StakeBlock.STAKE_AABB_Z);
+    public static final VoxelShape WEST_STAKE = Shapes.or(WEST_AABB, StakeBlock.STAKE_AABB_X);
+    
     private static VoxelShape getAABB(Direction direction) {
-        double min = 0;
-        double max = 8;
+        int start = 0;
+        int end = 8;
+        
         if(direction.getAxisDirection() == AxisDirection.POSITIVE) {
-            min = 8;
-            max = 16;
+            start = 8;
+            end = 16;
         }
 
         if(direction.getAxis() == Axis.X)
-            return Block.box(min, 0, 0, max, 16, 16);
-        else return Block.box(0, 0, min, 16, 16, max);
+            return Block.box(start, 0, 0, end, 16, 16);
+        else return Block.box(0, 0, start, 16, 16, end);
     }
 
     public VerticalCrossedLogsBlock() {
@@ -70,6 +68,12 @@ public class VerticalCrossedLogsBlock extends Block implements SimpleWaterlogged
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(LEAVES, false)
                 .setValue(TYPE, VerticalSlabType.FRONT).setValue(WATERLOGGED, false).setValue(STAKE, false));
     }
+    
+
+    @Override
+   public BlockState rotate(BlockState state, Rotation rotation) {
+      return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+   }
     
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -164,38 +168,64 @@ public class VerticalCrossedLogsBlock extends Block implements SimpleWaterlogged
     
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+        if (state.getValue(LEAVES) || state.getValue(TYPE) == VerticalSlabType.DOUBLE)
+            return Shapes.block();
         Direction facing = state.getValue(FACING);
         switch(state.getValue(TYPE)) {
             case FRONT:
                 switch(facing) {
                     case NORTH:
-                        return NORTH_AABB;
+                        if (state.getValue(STAKE))
+                            return NORTH_STAKE;
+                        else
+                            return NORTH_AABB;
                     case SOUTH:
-                        return SOUTH_AABB;
+                        if (state.getValue(STAKE))
+                            return SOUTH_STAKE;
+                        else
+                            return SOUTH_AABB;
                     case EAST:
-                        return EAST_AABB;
+                        if (state.getValue(STAKE))
+                            return EAST_STAKE;
+                        else
+                            return EAST_AABB;
                     case WEST:
-                        return WEST_AABB;
+                        if (state.getValue(STAKE))
+                            return WEST_STAKE;
+                        else
+                            return WEST_AABB;
                 }
             case BACK:
                 switch(facing) {
                     case NORTH:
-                        return SOUTH_AABB;
+                        if (state.getValue(STAKE))
+                            return SOUTH_STAKE;
+                        else
+                            return SOUTH_AABB;
                     case SOUTH:
-                        return NORTH_AABB;
+                        if (state.getValue(STAKE))
+                            return NORTH_STAKE;
+                        else
+                            return NORTH_AABB;
                     case EAST:
-                        return WEST_AABB;
+                        if (state.getValue(STAKE))
+                            return WEST_STAKE;
+                        else
+                            return WEST_AABB;
                     case WEST:
-                        return EAST_AABB;
+                        if (state.getValue(STAKE))
+                            return EAST_STAKE;
+                        else
+                            return EAST_AABB;
                 }
         }
         return Shapes.block();
     }
 
     @Override
-   public FluidState getFluidState(BlockState state) {
-      return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
-   }
+    public FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
     
     @Override
     public boolean canPlaceLiquid(BlockGetter getter, BlockPos pos, BlockState state, Fluid fluid) {
@@ -235,18 +265,18 @@ public class VerticalCrossedLogsBlock extends Block implements SimpleWaterlogged
     }
 
     @Override
-   public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType pathType) {
+    public boolean isPathfindable(BlockState state, BlockGetter getter, BlockPos pos, PathComputationType pathType) {
         switch(pathType) {
             case LAND:
-               return false;
+                return false;
             case WATER:
-               return getter.getFluidState(pos).is(FluidTags.WATER);
+                return getter.getFluidState(pos).is(FluidTags.WATER);
             case AIR:
-               return false;
+                return false;
             default:
-               return false;
+                return false;
         }
-   }
+    }
     
     public enum VerticalSlabType implements StringRepresentable {
         FRONT("front"),
@@ -256,17 +286,17 @@ public class VerticalCrossedLogsBlock extends Block implements SimpleWaterlogged
         private final String name;
 
         private VerticalSlabType(String p_61775_) {
-           this.name = p_61775_;
+            this.name = p_61775_;
         }
 
         @Override
         public String toString() {
-           return this.name;
+            return this.name;
         }
 
         @Override
         public String getSerializedName() {
-           return this.name;
+            return this.name;
         }
      }
 }

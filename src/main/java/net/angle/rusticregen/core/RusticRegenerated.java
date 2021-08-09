@@ -95,7 +95,9 @@ public class RusticRegenerated {
         } else
             ((SaplingBlock) ModBlocks.APPLE_SAPLING.get()).treeGrower = new NormalAppleTreeGrower();
         
-        ModFeatures.setupFeatures();
+        ModItems.setup();
+        
+        ModFeatures.setup();
         
         if (Configs.COMMON.addNewBiomes.get()) {
         

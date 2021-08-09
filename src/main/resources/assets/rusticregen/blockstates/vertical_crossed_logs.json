@@ -17,19 +17,19 @@
             "apply": {"model": "rusticregen:block/crossed_logs", "x": 90, "y": 90}
         },{
             "when": { "type": "back|double", "facing": "north" },
-            "apply": {"model": "rusticregen:block/crossed_logs", "x": 270, "y": 180}
+            "apply": {"model": "rusticregen:block/vertical_crossed_logs", "x": 0, "y": 180}
         },
         {
             "when": { "type": "back|double", "facing": "east" },
-            "apply": {"model": "rusticregen:block/crossed_logs", "x": 270, "y": 270}
+            "apply": {"model": "rusticregen:block/vertical_crossed_logs", "x": 0, "y": 270}
         },
         {
             "when": { "type": "back|double", "facing": "south" },
-            "apply": {"model": "rusticregen:block/crossed_logs", "x": 270, "y": 0}
+            "apply": {"model": "rusticregen:block/vertical_crossed_logs", "x": 0, "y": 0}
         },
         {
             "when": { "type": "back|double", "facing": "west" },
-            "apply": {"model": "rusticregen:block/crossed_logs", "x": 270, "y": 90}
+            "apply": {"model": "rusticregen:block/vertical_crossed_logs", "x": 0, "y": 90}
         },
         {
             "when": { "stake": "true", "facing": "east|west" },

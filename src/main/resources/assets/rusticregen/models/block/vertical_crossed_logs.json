@@ -1,9 +1,7 @@
 {
     "parent": "rusticregen:block/crossed_logs",
-    "display": {
-        "head": {
-            "rotation": [90, 0, 0],
-            "translation": [0, 10.5, 0]
-        }
+    "transform": {
+        "origin": "center",
+        "rotation": [0, 90, 90]
     }
 }

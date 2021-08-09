@@ -6,7 +6,6 @@
 package net.angle.rusticregen.common.blocks;
 
 import net.angle.rusticregen.common.items.ModItems;
-import net.angle.rusticregen.core.RusticRegenerated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
-import static net.minecraft.world.level.block.SlabBlock.TYPE;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -43,9 +43,11 @@ import net.minecraftforge.common.ToolType;
 public class CrossedLogsBlock extends SlabBlock implements LeafCoveredEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty STAKE = BooleanProperty.create("stake");
+    public static final VoxelShape BOTTOM_STAKE = Shapes.or(BOTTOM_AABB, StakeBlock.STAKE_AABB_Y);
+    public static final VoxelShape TOP_STAKE = Shapes.or(TOP_AABB, StakeBlock.STAKE_AABB_Y);
 
     public CrossedLogsBlock() {
-        super(Properties.of(Material.WOOD).noOcclusion().strength(2).harvestTool(ToolType.AXE));
+        super(Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion().harvestTool(ToolType.AXE));
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(STAKE, false).setValue(LEAVES, false));
     }
     
@@ -68,8 +70,12 @@ public class CrossedLogsBlock extends SlabBlock implements LeafCoveredEntityBloc
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        if (state.getValue(LEAVES))
+        if (state.getValue(LEAVES) || state.getValue(TYPE) == SlabType.DOUBLE)
             return Shapes.block();
+        else if (state.getValue(STAKE) && state.getValue(TYPE) == SlabType.BOTTOM)
+            return BOTTOM_STAKE;
+        else if (state.getValue(STAKE) && state.getValue(TYPE) == SlabType.TOP)
+            return TOP_STAKE;
         else 
             return super.getShape(state, getter, pos, context); //To change body of generated methods, choose Tools | Templates.
     }

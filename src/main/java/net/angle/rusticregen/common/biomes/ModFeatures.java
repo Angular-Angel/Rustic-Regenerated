@@ -67,7 +67,7 @@ public class ModFeatures {
     public static ConfiguredFeature<?, ?> MEGA_PINE_005;
     public static ConfiguredFeature<?, ?> MEGA_SPRUCE_005;
     
-    public static void setupFeatures() {
+    public static void setup() {
         PATCH_ALLIUM = BuiltinRegistries.register(BuiltinRegistries.CONFIGURED_FEATURE, MODID + ":patch_allium",
             Feature.RANDOM_PATCH.configured((new RandomPatchConfiguration.GrassConfigurationBuilder(
                 new SimpleStateProvider(Blocks.ALLIUM.defaultBlockState()),

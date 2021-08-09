@@ -6,6 +6,7 @@
 package net.angle.rusticregen.common.blocks;
 
 import net.angle.rusticregen.common.blocks.entities.LeafCoveredEntity;
+import net.angle.rusticregen.core.FuelHandler;
 import net.angle.rusticregen.core.RusticRegenerated;
 import static net.angle.rusticregen.core.RusticRegenerated.MODID;
 import net.minecraft.world.level.block.Block;
@@ -38,6 +39,4 @@ public class ModBlocks {
     
     public static final RegistryObject<BlockEntityType<LeafCoveredEntity>> CROSSED_LOGS_ENTITY_TYPE = 
             BLOCK_ENTITIES.register("crossed_logs", () -> BlockEntityType.Builder.of(LeafCoveredEntity::new, ModBlocks.CROSSED_LOGS.get()).build(null));
-    
-    
 }

@@ -1,1 +1,8 @@
-{ "parent": "rusticregen:block/vertical_crossed_logs" }
+{ 
+    "parent": "rusticregen:block/vertical_crossed_logs",
+    "display": {
+        "gui": {
+            "translation": [0, 10.5, 0]
+        }
+    }
+}
