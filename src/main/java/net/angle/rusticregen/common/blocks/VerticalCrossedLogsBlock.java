@@ -94,20 +94,16 @@ public class VerticalCrossedLogsBlock extends Block implements SimpleWaterlogged
             case X:
                 switch(direction.getAxisDirection()) {
                     case POSITIVE:
-                        System.out.println("Positive X!");
                         return clickLocation.x % 1 < 0.5D;
                     case NEGATIVE:
-                        System.out.println("Negative X: " + (clickLocation.x % 1 > 0.5D));
                         return clickLocation.x % 1 > 0.5D;
                 }
                 break;
             case Z:
                 switch(direction.getAxisDirection()) {
                     case POSITIVE:
-                        System.out.println("Positive Z!");
                         return clickLocation.z % 1 < 0.5D;
                     case NEGATIVE:
-                        System.out.println("Negative Z!");
                         return clickLocation.z % 1 > 0.5D;
                 }
         }
@@ -135,6 +131,7 @@ public class VerticalCrossedLogsBlock extends Block implements SimpleWaterlogged
                 state = state.setValue(FACING, context.getHorizontalDirection());
                 if (placingBack(context))
                     state = state.setValue(TYPE, VerticalSlabType.BACK);
+                break;
         }
         
         if (context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER)

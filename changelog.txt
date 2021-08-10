@@ -1,3 +1,9 @@
+1.17.1-1.2.2-BETA:
+*Fix to make the mod run on dedicated servers.
+
+1.17.1-1.2.1-BETA:
+*Adds vertical crossed logs to the game.
+
 1.17.1-1.1.1-RELEASE:
 *Can now use shears to remove leaves from leaf covered blocks.
 

@@ -6,31 +6,20 @@
 package net.angle.rusticregen.core;
 
 import java.util.ArrayList;
-import net.angle.rusticregen.client.LeafModelLoader;
 import net.angle.rusticregen.common.biomes.ModBiomes;
 import net.angle.rusticregen.common.biomes.ModFeatures;
 import net.angle.rusticregen.common.blocks.*;
 import net.angle.rusticregen.common.grower.*;
 import net.angle.rusticregen.common.items.ModItems;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.common.BiomeDictionary;
@@ -121,51 +110,6 @@ public class RusticRegenerated {
             BiomeDictionary.addTypes(mega_apple_orchard, Type.OVERWORLD, Type.FOREST, Type.DENSE, Type.RARE);
             BiomeManager.addBiome(BiomeManager.BiomeType.COOL, new BiomeManager.BiomeEntry(mega_apple_orchard, 1));
         }
-    }
-
-    @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
-    public static class RegistryEvents {
-        @SubscribeEvent
-        public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-            
-        }
-        
-        @SubscribeEvent
-        public static void registerItemColors(final ColorHandlerEvent.Item event) {
-            event.getItemColors().register((ItemStack stack, int i) ->
-                    FoliageColor.getDefaultColor(), leafItems.toArray(new Item[]{}));
-        }
-        
-        @SubscribeEvent
-        public static void registerBlockColors(final ColorHandlerEvent.Block event) {
-            event.getBlockColors().register((state, world, pos, tintIndex) ->
-                    world != null && pos != null
-                            ? BiomeColors.getAverageFoliageColor(world, pos)
-                            : FoliageColor.getDefaultColor(), leafBlocks.toArray(new Block[]{}));
-            
-            event.getBlockColors().register((state, world, pos, tintIndex) -> {
-                try {
-                    BlockState leafState = ((LeafCoveredEntityBlock) state.getBlock()).getBlockEntity(world, pos).getLeafState();
-                    return Minecraft.getInstance().getBlockColors().getColor(leafState, world, pos, tintIndex);
-                } catch (Exception e) {
-                    return -1; //No tint!
-                }}, ModBlocks.CROSSED_LOGS.get(), ModBlocks.VERTICAL_CROSSED_LOGS.get(), ModBlocks.STAKE.get());
-        }
-        
-        @SubscribeEvent
-        public static void clientSetup(FMLClientSetupEvent event) {
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.CROSSED_LOGS.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.VERTICAL_CROSSED_LOGS.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.STAKE.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SAPLING.get(), RenderType.cutout());
-            ItemBlockRenderTypes.setRenderLayer(ModBlocks.APPLE_SEEDS.get(), RenderType.cutout());
-        }
-        
-        @SubscribeEvent
-        public static void onRegisterModelLoaders(ModelRegistryEvent event) {
-            ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "leaf_covered"), LeafModelLoader.INSTANCE);
-        }
-        
     }
     
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.FORGE)

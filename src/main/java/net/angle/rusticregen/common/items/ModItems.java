@@ -8,7 +8,6 @@ package net.angle.rusticregen.common.items;
 import net.angle.rusticregen.common.blocks.ModBlocks;
 import net.angle.rusticregen.core.FuelHandler;
 import net.angle.rusticregen.core.RusticRegenerated;
-import static net.angle.rusticregen.core.RusticRegenerated.MODID;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -22,7 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  * @author angle
  */
 public class ModItems {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
+    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, RusticRegenerated.MODID);
     
     public static final RegistryObject<Item> APPLE_LEAVES = ITEMS.register("apple_leaves", () -> {
         return RusticRegenerated.registerLeafItem(new BlockItem(ModBlocks.APPLE_LEAVES.get(), new Item.Properties().tab(CreativeModeTab.TAB_DECORATIONS)));
