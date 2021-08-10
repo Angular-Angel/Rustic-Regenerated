@@ -1,8 +1,15 @@
-{ 
-    "parent": "rusticregen:block/vertical_crossed_logs",
+{
+    "parent": "rusticregen:block/crossed_logs",
     "display": {
         "gui": {
-            "translation": [0, 10.5, 0]
+            "rotation": [ 30, 225, 270 ],
+            "translation": [ 0, 0, 0],
+            "scale":[ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 90, 0, 0 ],
+            "translation": [ 0, 3, 0],
+            "scale":[ 0.25, 0.25, 0.25 ]
         }
     }
 }

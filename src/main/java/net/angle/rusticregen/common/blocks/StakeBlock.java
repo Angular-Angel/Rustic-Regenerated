@@ -5,7 +5,9 @@
  */
 package net.angle.rusticregen.common.blocks;
 
+import static net.angle.rusticregen.common.blocks.CrossedLogsBlock.FACING;
 import static net.angle.rusticregen.common.blocks.LeafCoveredEntityBlock.LEAVES;
+import net.angle.rusticregen.common.blocks.VerticalCrossedLogsBlock.VerticalSlabType;
 import net.angle.rusticregen.common.items.ModItems;
 import net.angle.rusticregen.core.RusticRegenerated;
 import net.minecraft.core.BlockPos;
@@ -109,17 +111,20 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
     public InteractionResult useCrossedLogs(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         ItemStack itemInHand = player.getItemInHand(hand);
         BlockPlaceContext context = new BlockPlaceContext(level, player, hand, itemInHand, result);
-        BlockState newState = ModBlocks.CROSSED_LOGS.get().getStateForPlacement(context);
-        if (newState == null)
-            return InteractionResult.FAIL;
-
+        BlockState newState = ModBlocks.CROSSED_LOGS.get().defaultBlockState();
+        
+        if (context.getClickLocation().y - (double)pos.getY() > 0.5D)
+            newState = newState.setValue(CrossedLogsBlock.TYPE, SlabType.TOP);
+        
+        newState = newState.setValue(FACING, context.getHorizontalDirection());
         newState = newState.setValue(CrossedLogsBlock.STAKE, true);
         newState = newState.setValue(CrossedLogsBlock.WATERLOGGED, state.getValue(WATERLOGGED));
+        
         if (context.getClickedFace() == Direction.UP)
             newState = newState.setValue(SlabBlock.TYPE, SlabType.TOP);
         else if (context.getClickedFace() == Direction.DOWN)
             newState = newState.setValue(SlabBlock.TYPE, SlabType.BOTTOM);
-        level.setBlock(pos, newState, 2);
+        level.setBlock(pos, newState, UPDATE_CLIENTS);
         if (!player.isCreative())
             itemInHand.shrink(1);
         return InteractionResult.SUCCESS;
@@ -128,24 +133,39 @@ public class StakeBlock extends RotatedPillarBlock implements SimpleWaterloggedB
     public InteractionResult useVerticalCrossedLogs(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         ItemStack itemInHand = player.getItemInHand(hand);
         BlockPlaceContext context = new BlockPlaceContext(level, player, hand, itemInHand, result);
-        BlockState newState = ModBlocks.VERTICAL_CROSSED_LOGS.get().getStateForPlacement(context);
-        if (newState == null)
-            return InteractionResult.FAIL;
-
+        BlockState newState = ModBlocks.VERTICAL_CROSSED_LOGS.get().defaultBlockState();
+        Direction.Axis axis = state.getValue(AXIS);
+        Direction direction = null;
+        
+        for (Direction dir : context.getNearestLookingDirections())
+            if (dir.getAxis() == axis) {
+                direction = dir;
+                break;
+            }
+        
+        if (context.getClickedFace() == direction)
+            newState = newState.setValue(VerticalCrossedLogsBlock.TYPE, VerticalSlabType.BACK);
+        else if (context.getClickedFace() != direction.getOpposite())
+            if (((VerticalCrossedLogsBlock) ModBlocks.VERTICAL_CROSSED_LOGS.get()).placingBack(context, direction))
+                newState = newState.setValue(VerticalCrossedLogsBlock.TYPE, VerticalSlabType.BACK);
+        
+        newState = newState.setValue(FACING, direction);
         newState = newState.setValue(CrossedLogsBlock.STAKE, true);
         newState = newState.setValue(CrossedLogsBlock.WATERLOGGED, state.getValue(WATERLOGGED));
+        
         level.setBlock(pos, newState, 2);
         if (!player.isCreative())
             itemInHand.shrink(1);
+        
         return InteractionResult.SUCCESS;
     }
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
         ItemStack itemInHand = player.getItemInHand(hand);
-        if (itemInHand.getItem() == ModItems.CROSSED_LOGS.get() && state.getValue(AXIS) == Direction.Axis.Y) {
+        if (itemInHand.getItem() == ModItems.CROSSED_LOGS.get() && state.getValue(AXIS) == Direction.Axis.Y && !state.getValue(LEAVES)) {
             return useCrossedLogs(state, level, pos, player, hand, result);
-        } else if (itemInHand.getItem() == ModItems.VERTICAL_CROSSED_LOGS.get() && state.getValue(AXIS) != Direction.Axis.Y) {
+        } else if (itemInHand.getItem() == ModItems.VERTICAL_CROSSED_LOGS.get() && state.getValue(AXIS) != Direction.Axis.Y && !state.getValue(LEAVES)) {
             return useVerticalCrossedLogs(state, level, pos, player, hand, result);
         } else 
             return LeafCoveredEntityBlock.super.use(state, level, pos, itemInHand, player, hand, result);

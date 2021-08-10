@@ -2,8 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "rusticregen:sticks_from_crossed_logs",
-      "rusticregen:vertical_crossed_logs"
+      "rusticregen:crossed_logs_from_vertical_crossed_logs"
     ]
   },
   "criteria": {
@@ -12,7 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": ["rusticregen:crossed_logs"]
+            "items": ["rusticregen:vertical_crossed_logs"]
           }
         ]
       }

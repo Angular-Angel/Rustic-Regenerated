@@ -1,0 +1,12 @@
+{
+  "type": "crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "rusticregen:vertical_crossed_logs"
+    }
+  ],
+  "result": {
+    "item": "rusticregen:crossed_logs",
+    "count": 1
+  }
+}

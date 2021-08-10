@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.*;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.*;
 
 /**
@@ -82,24 +83,32 @@ public class VerticalCrossedLogsBlock extends Block implements SimpleWaterlogged
     }
     
     public boolean placingBack(BlockPlaceContext context) {
-        Direction horizontalDirection = context.getHorizontalDirection();
+        return placingBack(context, context.getHorizontalDirection());
+    }
+    
+    public boolean placingBack(BlockPlaceContext context, Direction direction) {
         BlockPos blockpos = context.getClickedPos();
-        
-        switch(horizontalDirection.getAxis()) {
+        Vec3 clickLocation = context.getClickLocation();
+        System.out.println(clickLocation);
+        switch(direction.getAxis()) {
             case X:
-                switch(horizontalDirection.getAxisDirection()) {
+                switch(direction.getAxisDirection()) {
                     case POSITIVE:
-                        return context.getClickLocation().x - (double) blockpos.getX() < 0.5D;
+                        System.out.println("Positive X!");
+                        return clickLocation.x % 1 < 0.5D;
                     case NEGATIVE:
-                        return context.getClickLocation().x - (double) blockpos.getX() > 0.5D;
+                        System.out.println("Negative X: " + (clickLocation.x % 1 > 0.5D));
+                        return clickLocation.x % 1 > 0.5D;
                 }
                 break;
             case Z:
-                switch(horizontalDirection.getAxisDirection()) {
+                switch(direction.getAxisDirection()) {
                     case POSITIVE:
-                        return context.getClickLocation().z - (double) blockpos.getZ() < 0.5D;
+                        System.out.println("Positive Z!");
+                        return clickLocation.z % 1 < 0.5D;
                     case NEGATIVE:
-                        return context.getClickLocation().z - (double) blockpos.getZ() > 0.5D;
+                        System.out.println("Negative Z!");
+                        return clickLocation.z % 1 > 0.5D;
                 }
         }
         return false;

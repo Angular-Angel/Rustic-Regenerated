@@ -1,0 +1,53 @@
+{
+    "type": "minecraft:block",
+    "pools": [
+        {
+            "rolls": 1.0,
+            "bonus_rolls": 0.0,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_count",
+                            "conditions": [
+                                {
+                                    "condition": "minecraft:block_state_property",
+                                    "block": "rusticregen:vertical_crossed_logs",
+                                    "properties": {
+                                        "type": "double"
+                                    }
+                                }
+                            ],
+                            "count": 2.0,
+                            "add": false
+                        },
+                        {
+                            "function": "minecraft:explosion_decay"
+                        }
+                    ],
+                    "name": "rusticregen:vertical_crossed_logs"
+                }
+            ]
+        },
+        {
+            "rolls": 1.0,
+            "bonus_rolls": 0.0,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "conditions": [
+                        {
+                            "condition": "minecraft:block_state_property",
+                            "block": "rusticregen:vertical_crossed_logs",
+                            "properties": {
+                                "stake": "true"
+                            }
+                        }
+                    ],
+                    "name": "rusticregen:stake"
+                }
+            ]
+        }
+    ]
+}

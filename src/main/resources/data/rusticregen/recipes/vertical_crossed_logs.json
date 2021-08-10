@@ -1,0 +1,17 @@
+{
+  "type": "crafting_shaped",
+  "pattern": [
+    "  1",
+    "  1",
+    "  1"
+  ],
+  "key": {
+    "1": {
+      "item": "rusticregen:crossed_logs"
+    }
+  },
+  "result": {
+    "item": "rusticregen:vertical_crossed_logs",
+    "count": 3
+  }
+}
