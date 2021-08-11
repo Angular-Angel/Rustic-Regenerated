@@ -5,9 +5,9 @@
  */
 package net.angle.rusticregen.client;
 
+import java.util.ArrayList;
 import net.angle.rusticregen.common.blocks.*;
 import net.angle.rusticregen.core.RusticRegenerated;
-import static net.angle.rusticregen.core.RusticRegenerated.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -30,11 +29,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
  */
 @Mod.EventBusSubscriber(modid=RusticRegenerated.MODID, value=Dist.CLIENT, bus=Mod.EventBusSubscriber.Bus.MOD)
 public class ClientEventRegistry {
-    @SubscribeEvent
-    public static void onBlocksRegistry(final RegistryEvent.Register<Block> blockRegistryEvent) {
-
-    }
-
+    
+    public static ArrayList<Block> leafBlocks = new ArrayList<>();
+    public static ArrayList<Item> leafItems = new ArrayList<>();
+    
     @SubscribeEvent
     public static void registerItemColors(final ColorHandlerEvent.Item event) {
         event.getItemColors().register((ItemStack stack, int i) ->
@@ -68,7 +66,16 @@ public class ClientEventRegistry {
 
     @SubscribeEvent
     public static void onRegisterModelLoaders(ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(new ResourceLocation(MODID, "leaf_covered"), LeafModelLoader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(new ResourceLocation(RusticRegenerated.MODID, "leaf_covered"), LeafModelLoader.INSTANCE);
     }
-
+    
+    public static Block registerLeafBlock(Block block) {
+        leafBlocks.add(block);
+        return block;
+    }
+    
+    public static Item registerLeafItem(Item item) {
+        leafItems.add(item);
+        return item;
+    }
 }

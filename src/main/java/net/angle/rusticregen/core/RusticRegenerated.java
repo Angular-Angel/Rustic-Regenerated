@@ -5,7 +5,6 @@
  */
 package net.angle.rusticregen.core;
 
-import java.util.ArrayList;
 import net.angle.rusticregen.common.biomes.ModBiomes;
 import net.angle.rusticregen.common.biomes.ModFeatures;
 import net.angle.rusticregen.common.blocks.*;
@@ -13,7 +12,10 @@ import net.angle.rusticregen.common.grower.*;
 import net.angle.rusticregen.common.items.ModItems;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.block.*;
@@ -25,6 +27,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.BiomeManager;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -42,9 +45,6 @@ public class RusticRegenerated {
     public static final String MODID = "rusticregen";
     public static final String NAME = "Rustic Regenerated";
     public static RusticRegenerated INSTANCE;
-    
-    public static ArrayList<Block> leafBlocks = new ArrayList<>();
-    public static ArrayList<Item> leafItems = new ArrayList<>();
     
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger(MODID);
@@ -65,16 +65,6 @@ public class RusticRegenerated {
         ModItems.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         
         ModBiomes.BIOMES.register(FMLJavaModLoadingContext.get().getModEventBus());
-    }
-    
-    public static Block registerLeafBlock(Block block) {
-        leafBlocks.add(block);
-        return block;
-    }
-    
-    public static Item registerLeafItem(Item item) {
-        leafItems.add(item);
-        return item;
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -114,6 +104,14 @@ public class RusticRegenerated {
     
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.FORGE)
     public static class ForgeEvents {
+        @SubscribeEvent
+	public static void onFoodEaten(LivingEntityUseItemEvent.Finish event) {
+		if (!(event.getEntity() instanceof Player)) return;
+                if (!ItemTags.getAllTags().getTag(new ResourceLocation("rusticregen", "crops/apple")).contains(event.getItem().getItem())) return;
+		if (Configs.SERVER.giveAppleCores.get()) 
+                    ((Player) event.getEntity()).addItem(new ItemStack(ModItems.APPLE_CORE.get()));
+        }
+        
         @SubscribeEvent
         public static void loadBiome(BiomeLoadingEvent event) {
             if (!Configs.COMMON.modifyBiomes.get())

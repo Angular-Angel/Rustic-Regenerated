@@ -5,8 +5,8 @@
  */
 package net.angle.rusticregen.common.blocks;
 
+import net.angle.rusticregen.client.ClientEventRegistry;
 import net.angle.rusticregen.common.blocks.entities.LeafCoveredEntity;
-import net.angle.rusticregen.core.FuelHandler;
 import net.angle.rusticregen.core.RusticRegenerated;
 import static net.angle.rusticregen.core.RusticRegenerated.MODID;
 import net.minecraft.world.level.block.Block;
@@ -24,7 +24,7 @@ public class ModBlocks {
     
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
 
-    public static final RegistryObject<Block> APPLE_LEAVES = BLOCKS.register("apple_leaves", () -> RusticRegenerated.registerLeafBlock(new AppleLeavesBlock()));
+    public static final RegistryObject<Block> APPLE_LEAVES = BLOCKS.register("apple_leaves", () -> ClientEventRegistry.registerLeafBlock(new AppleLeavesBlock()));
     
     public static final RegistryObject<Block> APPLE_SAPLING = BLOCKS.register("apple_sapling", () -> new AppleSaplingBlock());
 

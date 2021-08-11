@@ -1,4 +1,7 @@
 1.17.1-1.2.2-BETA:
+*Add apple cores.
+
+1.17.1-1.2.2-BETA:
 *Fix to make the mod run on dedicated servers.
 
 1.17.1-1.2.1-BETA:
