@@ -9,7 +9,6 @@ import static net.angle.rusticregen.common.blocks.CrossedLogsBlock.FACING;
 import static net.angle.rusticregen.common.blocks.LeafCoveredEntityBlock.LEAVES;
 import net.angle.rusticregen.common.blocks.VerticalCrossedLogsBlock.VerticalSlabType;
 import net.angle.rusticregen.common.items.ModItems;
-import net.angle.rusticregen.core.RusticRegenerated;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;

@@ -8,7 +8,6 @@ package net.angle.rusticregen.common.blocks;
 import net.angle.rusticregen.client.ClientEventRegistry;
 import net.angle.rusticregen.common.blocks.entities.LeafCoveredEntity;
 import net.angle.rusticregen.core.RusticRegenerated;
-import static net.angle.rusticregen.core.RusticRegenerated.MODID;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fmllegacy.RegistryObject;
@@ -22,7 +21,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, RusticRegenerated.MODID);
     
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, RusticRegenerated.MODID);
 
     public static final RegistryObject<Block> APPLE_LEAVES = BLOCKS.register("apple_leaves", () -> ClientEventRegistry.registerLeafBlock(new AppleLeavesBlock()));
     
@@ -35,6 +34,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> VERTICAL_CROSSED_LOGS = BLOCKS.register("vertical_crossed_logs", () -> new VerticalCrossedLogsBlock());
     
     public static final RegistryObject<Block> STAKE = BLOCKS.register("stake", () -> new StakeBlock());
+    
+    public static final RegistryObject<Block> LEAF_COVERED_BLOCK = BLOCKS.register("leaf_covered_block", () -> new LeafCoveredBlock());
     
     
     public static final RegistryObject<BlockEntityType<LeafCoveredEntity>> CROSSED_LOGS_ENTITY_TYPE = 

@@ -8,17 +8,24 @@ package net.angle.rusticregen.core;
 import net.angle.rusticregen.common.biomes.ModBiomes;
 import net.angle.rusticregen.common.biomes.ModFeatures;
 import net.angle.rusticregen.common.blocks.*;
+import static net.angle.rusticregen.common.blocks.LeafCoveredEntityBlock.LEAVES;
+import net.angle.rusticregen.common.blocks.entities.LeafCoveredBlockEntity;
 import net.angle.rusticregen.common.grower.*;
 import net.angle.rusticregen.common.items.ModItems;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.block.*;
+import static net.minecraft.world.level.block.Block.UPDATE_ALL;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,7 +35,10 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.BiomeManager;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
@@ -104,12 +114,38 @@ public class RusticRegenerated {
     
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.FORGE)
     public static class ForgeEvents {
+        
         @SubscribeEvent
-	public static void onFoodEaten(LivingEntityUseItemEvent.Finish event) {
+	public static void onItemUsed(BlockEvent.BreakEvent event) {
+//            if (state.getValue(LEAVES))
+//                level.setBlock(pos, state.setValue(LEAVES, false), UPDATE_ALL);
+        }
+        
+        @SubscribeEvent
+	public static void onItemUsed(LivingEntityUseItemEvent.Finish event) {
 		if (!(event.getEntity() instanceof Player)) return;
                 if (!ItemTags.getAllTags().getTag(new ResourceLocation("rusticregen", "crops/apple")).contains(event.getItem().getItem())) return;
-		if (Configs.SERVER.giveAppleCores.get()) 
+		if (Configs.SERVER.giveAppleCores.get())
                     ((Player) event.getEntity()).addItem(new ItemStack(ModItems.APPLE_CORE.get()));
+        }
+        
+        @SubscribeEvent
+	public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+            Item item = event.getItemStack().getItem();
+            if (!(item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof LeavesBlock)) return;
+            BlockPos pos = event.getPos();
+            BlockState blockState = event.getWorld().getBlockState(pos);
+            
+            if (!(blockState.getBlock() instanceof FenceBlock)) return;
+            
+            BlockState newBlockState = ModBlocks.LEAF_COVERED_BLOCK.get().defaultBlockState();
+            event.getWorld().setBlock(pos, newBlockState, UPDATE_ALL);
+            
+            LeavesBlock leavesBlock = (LeavesBlock) ((BlockItem) item).getBlock();
+            LeafCoveredBlockEntity blockEntity = ((LeafCoveredBlock) ModBlocks.LEAF_COVERED_BLOCK.get()).getBlockEntity(event.getWorld(), pos);
+            blockEntity.setLeafState(leavesBlock.defaultBlockState());
+            blockEntity.setInternalBlockState(blockState);
+            event.setCanceled(true);
         }
         
         @SubscribeEvent

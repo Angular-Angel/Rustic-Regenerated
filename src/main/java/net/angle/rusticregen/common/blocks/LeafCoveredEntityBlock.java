@@ -96,11 +96,4 @@ public interface LeafCoveredEntityBlock extends EntityBlock {
     public default LeafCoveredEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new LeafCoveredEntity(pos, state);
     }
-    
-    public default void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (state.getValue(LEAVES))
-            level.setBlock(pos, state.setValue(LEAVES, false), UPDATE_ALL);
-        
-    }
-    
 }

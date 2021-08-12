@@ -24,8 +24,8 @@ public class LeafCoveredEntity extends BlockEntity {
     
     private BlockState leafState = null;
     
-    public LeafCoveredEntity(BlockPos p_155229_, BlockState p_155230_) {
-        super(ModBlocks.CROSSED_LOGS_ENTITY_TYPE.get(), p_155229_, p_155230_);
+    public LeafCoveredEntity(BlockPos pos, BlockState state) {
+        super(ModBlocks.CROSSED_LOGS_ENTITY_TYPE.get(), pos, state);
     }
 
     /**

@@ -22,7 +22,6 @@ import net.angle.rusticregen.client.LeafModelLoader.LeafCoveredGeometry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
@@ -33,7 +32,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.QuadTransformer;
@@ -94,17 +92,22 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand, IModelData extraData) {
             LeafCoveredModelData data = extraData.getData(LeafCoveredModelData.PROPERTY);
             
-            if (data == null) {
-                return ImmutableList.of();
-            }
+            List<BakedQuad> quads = new ArrayList<>();
             
-            if (data.state != null) {
+            if (data == null)
+                return quads;
+            
+            if (data.leafState != null) {
                 Matrix4f matrix = Matrix4f.createScaleMatrix(1.001f, 1.001f, 1.001f);
                 matrix.add(Matrix4f.createTranslateMatrix(-0.0005f, -0.0005f, -0.0005f));
                 QuadTransformer transformer = new QuadTransformer(new Transformation(matrix));
-                return transformer.processMany(Minecraft.getInstance().getBlockRenderer().getBlockModel(data.state).getQuads(data.state, side, rand, data));
-            } else 
-                return ImmutableList.of();
+                quads.addAll(transformer.processMany(Minecraft.getInstance().getBlockRenderer().getBlockModel(data.leafState).getQuads(data.leafState, side, rand, data)));
+            }
+            
+            if (data.internalBlockState != null)
+                quads.addAll(Minecraft.getInstance().getBlockRenderer().getBlockModel(data.internalBlockState).getQuads(data.internalBlockState, side, rand, data));
+            
+            return quads;
         }
 
         @Override
@@ -142,10 +145,16 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
     public static class LeafCoveredModelData implements IModelData {
         public static final ModelProperty<LeafCoveredModelData> PROPERTY = new ModelProperty<>();
 
-        public final BlockState state;
+        public final BlockState leafState;
+        public final BlockState internalBlockState;
         
-        public LeafCoveredModelData(BlockState state) {
-            this.state = state;
+        public LeafCoveredModelData(BlockState leafState) {
+            this(leafState, null);
+        }
+        
+        public LeafCoveredModelData(BlockState leafState, BlockState internalBlockState) {
+            this.leafState = leafState;
+            this.internalBlockState = internalBlockState;
         }
 
         @Override

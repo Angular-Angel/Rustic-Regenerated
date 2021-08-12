@@ -5,13 +5,9 @@
  */
 package net.angle.rusticregen.common.blocks;
 
-import java.util.List;
 import java.util.Random;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.angle.rusticregen.core.Configs;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.BlockGetter;
