@@ -17,7 +17,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import static net.minecraft.world.level.block.Block.UPDATE_ALL;
@@ -88,8 +88,8 @@ public interface LeafCoveredEntityBlock extends EntityBlock {
             return InteractionResult.FAIL;
     }
     
-    public default LeafCoveredEntity getBlockEntity(BlockAndTintGetter level, BlockPos pos) {
-        return (LeafCoveredEntity) level.getBlockEntity(pos);
+    public default LeafCoveredEntity getBlockEntity(BlockGetter getter, BlockPos pos) {
+        return (LeafCoveredEntity) getter.getBlockEntity(pos);
     }
     
     @Override

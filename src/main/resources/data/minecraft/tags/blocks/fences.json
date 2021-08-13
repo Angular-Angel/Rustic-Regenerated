@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "rusticregen:leaf_covered_wooden_fence",
+    "rusticregen:leaf_covered_nonwooden_fence"
+  ]
+}

@@ -8,23 +8,24 @@ package net.angle.rusticregen.core;
 import net.angle.rusticregen.common.biomes.ModBiomes;
 import net.angle.rusticregen.common.biomes.ModFeatures;
 import net.angle.rusticregen.common.blocks.*;
-import static net.angle.rusticregen.common.blocks.LeafCoveredEntityBlock.LEAVES;
 import net.angle.rusticregen.common.blocks.entities.LeafCoveredBlockEntity;
 import net.angle.rusticregen.common.grower.*;
 import net.angle.rusticregen.common.items.ModItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.block.*;
-import static net.minecraft.world.level.block.Block.UPDATE_ALL;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,7 +39,6 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
@@ -115,11 +115,17 @@ public class RusticRegenerated {
     @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.FORGE)
     public static class ForgeEvents {
         
-        @SubscribeEvent
-	public static void onItemUsed(BlockEvent.BreakEvent event) {
-//            if (state.getValue(LEAVES))
-//                level.setBlock(pos, state.setValue(LEAVES, false), UPDATE_ALL);
-        }
+//        @SubscribeEvent
+//	public static void onBlockBroken(BlockEvent.BreakEvent event) {
+//            BlockPos pos = event.getPos();
+//            LevelAccessor world = event.getWorld();
+//            BlockState blockState = world.getBlockState(pos);
+//            if (blockState.getBlock() instanceof LeafCoveredBlock) {
+//                LeafCoveredBlockEntity blockEntity = (LeafCoveredBlockEntity) world.getBlockEntity(pos);
+//                world.setBlock(pos, blockEntity.getInternalBlockState(), Block.UPDATE_ALL);
+//                event.setCanceled(true);
+//            }
+//        }
         
         @SubscribeEvent
 	public static void onItemUsed(LivingEntityUseItemEvent.Finish event) {
@@ -135,16 +141,24 @@ public class RusticRegenerated {
             if (!(item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof LeavesBlock)) return;
             BlockPos pos = event.getPos();
             BlockState blockState = event.getWorld().getBlockState(pos);
+            Block block = blockState.getBlock();
+            if (block instanceof EntityBlock) return;
             
-            if (!(blockState.getBlock() instanceof FenceBlock)) return;
-            
-            BlockState newBlockState = ModBlocks.LEAF_COVERED_BLOCK.get().defaultBlockState();
-            event.getWorld().setBlock(pos, newBlockState, UPDATE_ALL);
-            
+            if (blockState.is(BlockTags.WOODEN_FENCES))
+                event.getWorld().setBlock(pos, ModBlocks.LEAF_COVERED_WOODEN_FENCE.get().defaultBlockState(), Block.UPDATE_ALL);
+            else if (blockState.is(BlockTags.FENCES))
+                event.getWorld().setBlock(pos, ModBlocks.LEAF_COVERED_NONWOODEN_FENCE.get().defaultBlockState(), Block.UPDATE_ALL);
+            else if (block instanceof WallBlock)
+                event.getWorld().setBlock(pos, ModBlocks.LEAF_COVERED_WALL.get().defaultBlockState(), Block.UPDATE_ALL);
+//            else if (block instanceof LanternBlock)
+            else return;
+
             LeavesBlock leavesBlock = (LeavesBlock) ((BlockItem) item).getBlock();
-            LeafCoveredBlockEntity blockEntity = ((LeafCoveredBlock) ModBlocks.LEAF_COVERED_BLOCK.get()).getBlockEntity(event.getWorld(), pos);
+            LeafCoveredBlockEntity blockEntity = ((LeafCoveredBlock) ModBlocks.LEAF_COVERED_WOODEN_FENCE.get()).getBlockEntity(event.getWorld(), pos);
             blockEntity.setLeafState(leavesBlock.defaultBlockState());
             blockEntity.setInternalBlockState(blockState);
+            if (!event.getPlayer().isCreative())
+                event.getItemStack().shrink(1);
             event.setCanceled(true);
         }
         

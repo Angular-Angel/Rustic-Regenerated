@@ -62,7 +62,7 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
 
         @Override
         public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
-            Material particleLocation = owner.resolveTexture("particle");
+            Material particleLocation = owner.resolveTexture("oak_leaves");
             TextureAtlasSprite particle = spriteGetter.apply(particleLocation);
             return new LeafCoveredBakedModel(owner.useSmoothLighting(), owner.isShadedInGui(), owner.isSideLit(), particle);
         }
@@ -79,7 +79,7 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
         private final boolean useAmbientOcclusion;
         private final boolean isGui3d;
         private final boolean usesBlockLight;
-        private final TextureAtlasSprite particle;
+        private TextureAtlasSprite particle;
         
         public LeafCoveredBakedModel(boolean useAmbientOcclusion, boolean isGui3d, boolean usesBlockLight, TextureAtlasSprite particle) {
             this.useAmbientOcclusion = useAmbientOcclusion;
@@ -101,11 +101,15 @@ public class LeafModelLoader implements IModelLoader<LeafCoveredGeometry> {
                 Matrix4f matrix = Matrix4f.createScaleMatrix(1.001f, 1.001f, 1.001f);
                 matrix.add(Matrix4f.createTranslateMatrix(-0.0005f, -0.0005f, -0.0005f));
                 QuadTransformer transformer = new QuadTransformer(new Transformation(matrix));
-                quads.addAll(transformer.processMany(Minecraft.getInstance().getBlockRenderer().getBlockModel(data.leafState).getQuads(data.leafState, side, rand, data)));
+                BakedModel blockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(data.leafState);
+                quads.addAll(transformer.processMany(blockModel.getQuads(data.leafState, side, rand, data)));
             }
             
-            if (data.internalBlockState != null)
-                quads.addAll(Minecraft.getInstance().getBlockRenderer().getBlockModel(data.internalBlockState).getQuads(data.internalBlockState, side, rand, data));
+            if (data.internalBlockState != null) {
+                BakedModel blockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(data.internalBlockState);
+                particle = blockModel.getParticleIcon();
+                quads.addAll(blockModel.getQuads(data.internalBlockState, side, rand, data));
+            }
             
             return quads;
         }

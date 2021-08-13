@@ -34,7 +34,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ToolType;
 
 /**
  *
@@ -47,7 +46,7 @@ public class CrossedLogsBlock extends SlabBlock implements LeafCoveredEntityBloc
     public static final VoxelShape TOP_STAKE = Shapes.or(TOP_AABB, StakeBlock.STAKE_AABB_Y);
 
     public CrossedLogsBlock() {
-        super(Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion().harvestTool(ToolType.AXE));
+        super(Properties.of(Material.WOOD, MaterialColor.WOOD).strength(2.0F, 3.0F).sound(SoundType.WOOD).noOcclusion());
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(STAKE, false).setValue(LEAVES, false));
     }
     

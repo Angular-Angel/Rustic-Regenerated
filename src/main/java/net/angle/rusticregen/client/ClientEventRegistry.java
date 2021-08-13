@@ -31,6 +31,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientEventRegistry {
     
     public static ArrayList<Block> leafBlocks = new ArrayList<>();
+    public static ArrayList<Block> leafCoveredBlocks = new ArrayList<>();
     public static ArrayList<Item> leafItems = new ArrayList<>();
     
     @SubscribeEvent
@@ -52,7 +53,7 @@ public class ClientEventRegistry {
                 return Minecraft.getInstance().getBlockColors().getColor(leafState, world, pos, tintIndex);
             } catch (Exception e) {
                 return -1; //No tint!
-            }}, ModBlocks.CROSSED_LOGS.get(), ModBlocks.VERTICAL_CROSSED_LOGS.get(), ModBlocks.STAKE.get());
+            }}, leafCoveredBlocks.toArray(new Block[]{}));
     }
 
     @SubscribeEvent
@@ -62,7 +63,7 @@ public class ClientEventRegistry {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.STAKE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.CROSSED_LOGS.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.VERTICAL_CROSSED_LOGS.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.LEAF_COVERED_BLOCK.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.LEAF_COVERED_WOODEN_FENCE.get(), RenderType.cutout());
     }
 
     @SubscribeEvent
@@ -72,6 +73,11 @@ public class ClientEventRegistry {
     
     public static Block registerLeafBlock(Block block) {
         leafBlocks.add(block);
+        return block;
+    }
+    
+    public static Block registerLeafCoveredBlock(Block block) {
+        leafCoveredBlocks.add(block);
         return block;
     }
     
